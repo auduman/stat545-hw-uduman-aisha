@@ -1,0 +1,11 @@
+---
+title: "README"
+author: "Aisha Uduman"
+date: "September 19, 2017"
+output:  
+      html_document:  
+        keep_md: true  
+---
+
+Include instructions of how to navigate files for hw02, links etc. 
+
