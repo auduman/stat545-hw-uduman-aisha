@@ -1,0 +1,84 @@
+---
+title: "hw02"
+author: "Aisha Uduman"
+date: "September 19, 2017"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r}
+library(gapminder)
+library(tidyverse)
+```
+
+## Exploring the Gapminder object 
+Justify each answer by calling the appropriate R functions 
+
+#### Is it a data frame, matrix, vector or list? 
+
+Gapminder is a data frame, as it contains a list of vectors of equal length, or same number of rows. 
+
+```{r}
+summary(gapminder)
+```
+
+
+#### What's its class?
+
+```{r}
+sapply(gapminder,class)
+```
+
+Classes are as follows:
+* country = factor
+* continent = factor 
+* year = integer 
+* lifeExp = numeric 
+* pop = integer 
+* gdpPercap = numeric
+
+
+#### How many variables/columns?
+
+```{r}
+ncol(gapminder)
+```
+
+6 variables/columns 
+
+#### How many rows/observations?
+
+```{r}
+nrow(gapminder)
+```
+1704 rows/observations
+
+#### Can you get these facts about extent or size in more than one way? Can you imagine different functions being useful in different contexts? 
+
+
+#### What data type is each variable? 
+
+```{r}
+head(gapminder)
+```
+
+```{r}
+typeof("Afghanistan")
+typeof("Asia")
+typeof(1952)
+typeof(28.801)
+typeof(8425333)
+typeof(779.4453)
+```
+
+The variables are as follows: 
+* country = character
+* continent = character 
+* year = double
+* lifeExp = double
+* pop = double
+* gdpPercap = double 
+
+### Exploring individual variables 
+
