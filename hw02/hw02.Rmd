@@ -268,4 +268,4 @@ I found I spent a really long time on this homework, and didn't want to overcomp
 - Colouring my density plot (still can't figure out how).
 - Not getting confused when assigning names to a dataset and then plotting it (sounds stupid but I kept forgetting to name things memorably)
 - Pushing my github doc...
-- It took me a really, really, really, really long time to get the graph of the countires  in Asia whose mean life expectancies are above 60.71 vs. GDP per capita to work. I went over the class notes and got some help online as well, and finally got it to work!  
+- It took me a really, really, really, really long time to get the graph of the countires  in Asia whose mean life expectancies are above 60.71 vs. GDP per capita to work. I went over the class notes and got some help online as well, and finally got it to work! Initially I made the mistake of trying to add the geom_point within the penultimate level, and then realised I didn't properly understand the process of piping. I re-read the class notes and also looked at [this website](http://seananderson.ca/2014/09/13/dplyr-intro.html) to help. 
