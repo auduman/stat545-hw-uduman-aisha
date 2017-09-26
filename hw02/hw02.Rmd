@@ -2,8 +2,7 @@
 title: "hw02"
 author: "Aisha Uduman"
 date: "September 19, 2017"
-output: 
-  github_document
+output: github_document
 ---
 
 # Homework 2: Exploring Gapminder
