@@ -3,7 +3,7 @@ title: "hw02"
 author: "Aisha Uduman"
 date: "September 19, 2017"
 output: 
-  github_document: 
+  html_document: 
     keep_md: true
 ---
 
