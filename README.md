@@ -11,5 +11,7 @@ Click [here](https://github.com/auduman/stat545-hw-uduman-aisha/blob/master/hw02
 
 Click [here](https://github.com/auduman/stat545-hw-uduman-aisha/blob/master/hw02/hw02.Rmd) to see my R Markdown file for hw02. 
 
+Click [here](https://github.com/auduman/stat545-hw-uduman-aisha/blob/master/hw02/hw02.md) to see the .md file for hw02 (which displays the function outputs)
+
 
 ### Homework 3
