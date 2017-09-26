@@ -3,9 +3,13 @@ title: "hw02"
 author: "Aisha Uduman"
 date: "September 19, 2017"
 output: 
-  html_document: 
+  github_document: 
     keep_md: yes
 ---
+
+# Homework 2: Exploring Gapminder
+
+## Bringing Rectangular Data 
 
 ```{r}
 library(gapminder)
@@ -13,72 +17,262 @@ library(tidyverse)
 ```
 
 ## Exploring the Gapminder object 
-Justify each answer by calling the appropriate R functions 
 
-#### Is it a data frame, matrix, vector or list? 
 
-Gapminder is a data frame, as it contains a list of vectors of equal length, or same number of rows. 
+#### 1. Is it a data frame, matrix, vector or list? 
+
+
+```{r}
+typeof(gapminder)
+class(gapminder)
+```
+
+Gapminder is a data frame and a list. 
+
+#### 2. What's its class?
+
+```{r}
+class(gapminder)
+```
+
+Gapminder's class is a dataframe, and a "tibble".  
+
+
+#### 3. How many variables/columns?
+
+```{r}
+ncol(gapminder)
+length(gapminder)
+```
+
+Both the ncol and the length functions tell us that there are 6 variables/columns.  
+
+#### 4. How many rows/observations?
+
+```{r}
+nrow(gapminder)
+```
+
+There are 1704 rows/observations
+
+#### 5. Can you get these facts about extent or size in more than one way? Can you imagine different functions being useful in different contexts? 
+
+
+Yes, there is more than on way to get facts about extent or size. Maybe the speed of computation varies between these different methods, so depending on your dataset one method may be favoured(?). I have no idea if that's true or not - I am super new to this! 
+
+For example, we can use the dim function which you can see displays the number of rows (1704) and columns (6). 
+
+```{r}
+dim(gapminder)
+```
+
+We can also use str to find out the names of the columns, class and type of each variable (i.e. we can see that country and continent variables are factors, year and population variables are integers, and life expectancy and GDP per capita are numbers.) 
+
+```{r}
+str(gapminder)
+```
+
+We can also use summary to see the number of variables (columns), the mean, median, minimum and maximum of each variable and their names. 
 
 ```{r}
 summary(gapminder)
 ```
 
+We can us the as_tibble() function to see the number of columns and their names, number of rows and data type of each variable. 
 
-#### What's its class?
+```{r}
+as_tibble(gapminder)
+```
+
+
+#### 6. What data type is each variable? 
+
+We can use sapply(gapminder, class), class(gapminder$variable) to see the data type of each variable. 
 
 ```{r}
 sapply(gapminder,class)
+```
+
+```{r}
+class(gapminder$country)
+class(gapminder$continent)
+class(gapminder$year)
+class(gapminder$lifeExp)
+class(gapminder$pop)
+class(gapminder$gdpPercap)
 ```
 
 Classes are as follows:
 * country = factor
 * continent = factor 
 * year = integer 
-* lifeExp = numeric 
+* lifeExp = numeric (double)
 * pop = integer 
-* gdpPercap = numeric
+* gdpPercap = numeric (double)
 
 
-#### How many variables/columns?
 
-```{r}
-ncol(gapminder)
-```
+## Exploring individual variables 
 
-6 variables/columns 
+#### 1. Pick one categorical variable (country) and at least one quantitative variable (gdpPercap) to explore. What are the possible values or range of each variable? What is the distribution? 
 
-#### How many rows/observations?
+**Categorical variable I chose is country:** 
 
 ```{r}
-nrow(gapminder)
+summary(gapminder$country)
+str(gapminder)
 ```
-1704 rows/observations
 
-#### Can you get these facts about extent or size in more than one way? Can you imagine different functions being useful in different contexts? 
+There are 142 possible values for 'Countries', each one having 12 entries. The possible values (names of all countries) can be seen by calling on a summary, and if you use the str function you can see the number of factors (number of countires) being 142, but not all their names. I'm not sure how to describe the range of countries...if we plot it you would see a uniform distribution as each country as 12 values, which isn't very informative at all.  
 
-
-#### What data type is each variable? 
 
 ```{r}
-head(gapminder)
+table(gapminder$country)
+barplot(table(gapminder$country))
+```
+
+**Quantitative variable I chose is life expectancy:** 
+
+```{r}
+summary(gapminder$lifeExp)
+```
+
+This is easier to describe: we can see life expectancy is between 23.60 - 82.60. The minimum and maximum life expectancy was found using the filter function: Rwanda has the lowest life expectancy (23.60) and Japan has the highest (82.60).  The range would therefore be 59 years. 
+
+```{r}
+filter(gapminder, lifeExp<24)
+filter(gapminder, lifeExp>82.5)
+```
+
+
+Typical values can be found using the following functions:  
+
+```{r}
+summary(gapminder$lifeExp)
+sd(gapminder$lifeExp)
+hist(gapminder$lifeExp, col = "blue", xlab = "Life Expectancy")
+```
+
+The average (mean) life expectancy is 60.71 years, and the standard deviation is 12.92 years. The data is quite spread, which makes sense, and we assume the values are weighted in the 47.80 years - 73.63 years range, as this is the range that is 1 standard deviation from the mean. A histogram can display these characteristics, though the general distribution is a bit unexpected (notice the increase on the right for the 65-75 years). Maybe, in this case, mean is not the best way to determine average life expectancy?  
+
+
+## Explore various plot types 
+
+**A scatterplot of two quantitative variables**
+
+I chose to do a scatterplot of population vs life expectancy. One way is to do a simple plot: 
+
+```{r}
+plot(gapminder$pop, gapminder$lifeExp)
+```
+
+However I found this doesn't tell us much, when most of the data is concentrated in the lower population ranges. We need to lox the x axis, and use ggplot to display this more effectively (or at least give more information). 
+
+
+```{r}
+pop.lifeExp <- ggplot(gapminder, aes(x=log10(pop), y=lifeExp))
+pop.lifeExp + geom_point(alpha=0.25, colour="purple")
+```
+
+
+This doesn't tell me a whole lot either...I tried again using year and life expectancy to see how that is changing over time. 
+
+```{r}
+year.gdp <- ggplot(gapminder, aes(x=year, y=gdpPercap))
+year.gdp + geom_point(alpha = 0.30, colour = "purple")
+```
+
+I'm not sure if this was the best way to do this, but it shows that GDP per capita is slowly increasing with time. 
+
+
+
+**A plot of one quantitative variable. Maybe a histogram or densityplot or frequency polygon**
+
+Plotting the quantitative variable life expectancy: I tried using a density plot (which took me longer than I'm proud of), which basically looks like a rounded version of the histogram for life expectancy. I couldn't figure out how to add colour to this. 
+
+```{r}
+ggplot(gapminder, aes(x=lifeExp), colour = "purple") + geom_density()
+```
+
+I found a resource on ggplot online and figured out how to make each continent a different colour. This shows more information about the variability between continents within this same density plot. 
+
+```{r}
+ggplot (gapminder, aes(x=(lifeExp), colour=continent)) + geom_density()
+```
+
+
+**A plot of one quantitative variable and one categorical. Maybe boxplots for several continents or countries**
+
+Use filter(), select() and %>%
+
+Practice piping together filter() and select(). Possibly even piping into ggplot().
+
+Plotting Chile's GDP per capita: 
+
+First I create a filter with just the information for Chile: 
+
+```{r}
+chile <- filter(gapminder, country=="Chile")
+```
+
+Next I use ggplot to plot this information, specifically Chile's GDP per capita over time. I used a geom_line as this seems more visually appropriate to see a general trend.  
+
+```{r}
+p <- ggplot(chile, aes(x=year, y=gdpPercap))
+p + geom_line()
+```
+
+This is a plot of two quantitative variables (GDP per capita and year) using Chile as an example. We can see from the graph that Chile's GDP per capita is increasing over time, quite drastically in the last 30 years. 
+
+**Trying again:**
+Countries in Asia whose mean life expectancies are above the world average (60.71) and their mean GDP per capitas graphed: 
+
+```{r}
+gapminder %>% filter(continent=="Asia", lifeExp>60.71) %>% select(gdpPercap, lifeExp) %>% ggplot(aes(x=log10(gdpPercap), y=lifeExp)) + geom_point(alpha=0.40, colour = "purple")
+```
+
+I logged the x axis (GDP per capita) because is it almost exponential and was not visually informative left as is. 
+
+
+```{r}
+p2 <- Asia %>% 
+    group_by(country) %>% 
+    summarize(lifeExp=mean(lifeExp), gdpPercap=mean(gdpPercap))
+p2
+```
+A plot of countries in Asia and their mean GDP per capitas:
+
+```{r}
+p3 <- ggplot(p2, aes(x=country, y=gdpPercap))
+p3 + geom_point()
+```
+
+A plot of countries in Asia and their mean life expentancies:
+```{r}
+p4 <- ggplot(p2, aes(x=country, y=lifeExp))
+p4 + geom_point()
+```
+
+Using %>%, filter and select to see how population changed between 1952 and 1997 in Zambia. 
+
+```{r}
+p5 <- gapminder %>% 
+    filter(country %in% c("Zambia"), 
+           year <= 2000, year >= 1940) %>% 
+    select(country, year, pop)
 ```
 
 ```{r}
-typeof("Afghanistan")
-typeof("Asia")
-typeof(1952)
-typeof(28.801)
-typeof(8425333)
-typeof(779.4453)
+p6 <- ggplot(p5, aes(x=year, y=pop))
+p6 + geom_line()
 ```
 
-The variables are as follows: 
-* country = character
-* continent = character 
-* year = double
-* lifeExp = double
-* pop = double
-* gdpPercap = double 
+## Reporting
 
-### Exploring individual variables 
+This took me much longer than Homework 1, which is expected as it goes into concepts in much more detail. I found the class on piping went a bit over my head, so I had to do some readings and use some online resources to better understand the syntax. 
 
+**Some problems I encountered**
+
+- Colouring my density plot 
+- Not getting confused when assigning names to a dataset and then plotting it (sounds stupid but I kept forgetting to name things memorably)
+- Pushing my github doc...
