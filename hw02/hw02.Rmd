@@ -17,6 +17,7 @@ library(tidyverse)
 ## Exploring the Gapminder object 
 
 
+
 #### 1. Is it a data frame, matrix, vector or list? 
 
 
@@ -26,6 +27,7 @@ class(gapminder)
 ```
 
 Gapminder is a data frame and a list. 
+
 
 #### 2. What's its class?
 
@@ -45,6 +47,7 @@ length(gapminder)
 
 Both the ncol and the length functions tell us that there are 6 variables/columns.  
 
+
 #### 4. How many rows/observations?
 
 ```{r}
@@ -53,8 +56,8 @@ nrow(gapminder)
 
 There are 1704 rows/observations
 
-#### 5. Can you get these facts about extent or size in more than one way? Can you imagine different functions being useful in different contexts? 
 
+#### 5. Can you get these facts about extent or size in more than one way? Can you imagine different functions being useful in different contexts? 
 
 Yes, there is more than on way to get facts about extent or size. Maybe the speed of computation varies between these different methods, so depending on your dataset one method may be favoured(?). I have no idea if that's true or not - I am super new to this! 
 
@@ -64,11 +67,13 @@ For example, we can use the dim function which you can see displays the number o
 dim(gapminder)
 ```
 
+
 We can also use str to find out the names of the columns, class and type of each variable (i.e. we can see that country and continent variables are factors, year and population variables are integers, and life expectancy and GDP per capita are numbers.) 
 
 ```{r}
 str(gapminder)
 ```
+
 
 We can also use summary to see the number of variables (columns), the mean, median, minimum and maximum of each variable and their names. 
 
@@ -76,7 +81,8 @@ We can also use summary to see the number of variables (columns), the mean, medi
 summary(gapminder)
 ```
 
-We can us the as_tibble() function to see the number of columns and their names, number of rows and data type of each variable. 
+
+We can use the as_tibble() function to see the number of columns and their names, number of rows and data type of each variable. 
 
 ```{r}
 as_tibble(gapminder)
@@ -101,12 +107,12 @@ class(gapminder$gdpPercap)
 ```
 
 Classes are as follows:
-* country = factor
-* continent = factor 
-* year = integer 
-* lifeExp = numeric (double)
-* pop = integer 
-* gdpPercap = numeric (double)
+- country = factor
+- continent = factor 
+- year = integer 
+- lifeExp = numeric (double)
+- pop = integer 
+- gdpPercap = numeric (double)
 
 
 
@@ -117,7 +123,7 @@ Classes are as follows:
 **Categorical variable I chose is country:** 
 
 ```{r}
-summary(gapminder$country)
+table(gapminder$country)
 str(gapminder)
 ```
 
@@ -125,7 +131,6 @@ There are 142 possible values for 'Countries', each one having 12 entries. The p
 
 
 ```{r}
-table(gapminder$country)
 barplot(table(gapminder$country))
 ```
 
@@ -135,14 +140,16 @@ barplot(table(gapminder$country))
 summary(gapminder$lifeExp)
 ```
 
-This is easier to describe: we can see life expectancy is between 23.60 - 82.60. The minimum and maximum life expectancy was found using the filter function: Rwanda has the lowest life expectancy (23.60) and Japan has the highest (82.60).  The range would therefore be 59 years. 
+This is easier to describe: we can see life expectancy is between 23.60 - 82.60. The specific countries experiencing the minimum and maximum life expectancy was found using the filter function:
 
 ```{r}
 filter(gapminder, lifeExp<24)
 filter(gapminder, lifeExp>82.5)
 ```
 
-
+Rwanda has the lowest life expectancy (23.60) and Japan has the highest (82.60).  The range would therefore be 59 years. I'm not sure if this was the most efficient way to identify the specific countries, but it worked. 
+ 
+ 
 Typical values can be found using the following functions:  
 
 ```{r}
@@ -152,6 +159,7 @@ hist(gapminder$lifeExp, col = "blue", xlab = "Life Expectancy")
 ```
 
 The average (mean) life expectancy is 60.71 years, and the standard deviation is 12.92 years. The data is quite spread, which makes sense, and we assume the values are weighted in the 47.80 years - 73.63 years range, as this is the range that is 1 standard deviation from the mean. A histogram can display these characteristics, though the general distribution is a bit unexpected (notice the increase on the right for the 65-75 years). Maybe, in this case, mean is not the best way to determine average life expectancy?  
+
 
 
 ## Explore various plot types 
@@ -189,7 +197,7 @@ I'm not sure if this was the best way to do this, but it shows that GDP per capi
 Plotting the quantitative variable life expectancy: I tried using a density plot (which took me longer than I'm proud of), which basically looks like a rounded version of the histogram for life expectancy. I couldn't figure out how to add colour to this. 
 
 ```{r}
-ggplot(gapminder, aes(x=lifeExp), colour = "purple") + geom_density()
+ggplot(gapminder, aes(x=lifeExp, colour="purple")) + geom_density()
 ```
 
 I found a resource on ggplot online and figured out how to make each continent a different colour. This shows more information about the variability between continents within this same density plot. 
@@ -199,11 +207,8 @@ ggplot (gapminder, aes(x=(lifeExp), colour=continent)) + geom_density()
 ```
 
 
+
 **A plot of one quantitative variable and one categorical. Maybe boxplots for several continents or countries**
-
-Use filter(), select() and %>%
-
-Practice piping together filter() and select(). Possibly even piping into ggplot().
 
 Plotting Chile's GDP per capita: 
 
@@ -213,7 +218,8 @@ First I create a filter with just the information for Chile:
 chile <- filter(gapminder, country=="Chile")
 ```
 
-Next I use ggplot to plot this information, specifically Chile's GDP per capita over time. I used a geom_line as this seems more visually appropriate to see a general trend.  
+
+Next I use ggplot to plot this information, specifically Chile's GDP per capita over time. I used a geom_line as this seems more visually appropriate to see a general trend. 
 
 ```{r}
 p <- ggplot(chile, aes(x=year, y=gdpPercap))
@@ -222,7 +228,8 @@ p + geom_line()
 
 This is a plot of two quantitative variables (GDP per capita and year) using Chile as an example. We can see from the graph that Chile's GDP per capita is increasing over time, quite drastically in the last 30 years. 
 
-**Trying again:**
+
+**Another example:**
 
 Countries in Asia whose mean life expectancies are above the world average (60.71) and their mean GDP per capitas graphed: 
 
@@ -235,6 +242,8 @@ I decided to log the x axis (GDP per capita) because is it exponential and was n
 ```{r}
 gapminder %>% filter(continent=="Asia", lifeExp>60.71) %>% select(gdpPercap, lifeExp) %>% ggplot(aes(x=log10(gdpPercap), y=lifeExp)) + geom_point(alpha=0.40, colour = "purple")
 ```
+
+I tried to group by country, but couldn't figure out how (so each country would have its own colour). 
 
 **Another example** 
 
@@ -258,13 +267,14 @@ This was taken from the class notes and amended. We can see that between the tim
 
 ## Reporting
 
-This took me much longer than Homework 1, which is expected as it goes into concepts in much more detail. I found the class on piping went a bit over my head, so I had to do some readings and use some online resources to better understand the syntax. This is definitely very new to me and I need to keep constantly referring back to notes/online resources/tutorials. I actually completed about 8 or 9 Swirl modules over the weekend to wrap my head around some of the basics which I maybe didn't totally understand in the first few weeks of this class. I found it really helped, and also helped me answer the first part of this homework (exploring the gapminder object). 
+This took me much longer than Homework 1, which is expected as it goes into concepts in much more detail. I found the class on piping went a bit over my head, so I had to do some readings and use some online resources to better understand the syntax. This is definitely very new to me and I need to keep constantly referring back to notes/online resources/tutorials. I actually completed about 8 or 9 Swirl modules over the weekend to wrap my head around some of the basics which I maybe didn't totally understand in the first few weeks of this class. I found it really helped, and also helped me answer the first part of this homework (exploring the gapminder object) which was fairly straightforward. 
 
-I found I spent a really long time on this homework, and didn't want to overcomplicate things by trying the additional section just yet. Maybe after a few more classes or a bit more practice as I'm still getting the hang of this! 
+I found I spent a really long time on this homework, and didn't want to overcomplicate things by trying the additional section just yet (using kable etc). Maybe after a few more classes or a bit more practice as I'm still getting the hang of this! 
+
 
 **Some problems I encountered**
 
-- Colouring my density plot (still can't figure out how).
+- Colouring my density plot (I figured out that the 'colour=' command needed to be within the initial aes function, however I wanted "purple" and got orange...not sure why. 
 - Not getting confused when assigning names to a dataset and then plotting it (sounds stupid but I kept forgetting to name things memorably)
-- Pushing my github doc...
+- Knitting my github doc kept resulting in errors...I then realized with Vincenzo's help that the "keep md: true" line didn't need to be there as a github document automatically does this. I removed that line and it worked!
 - It took me a really, really, really, really long time to get the graph of the countires  in Asia whose mean life expectancies are above 60.71 vs. GDP per capita to work. I went over the class notes and got some help online as well, and finally got it to work! Initially I made the mistake of trying to add the geom_point within the penultimate level, and then realised I didn't properly understand the process of piping. I re-read the class notes and also looked at [this website](http://seananderson.ca/2014/09/13/dplyr-intro.html) to help. 
