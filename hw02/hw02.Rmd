@@ -228,37 +228,23 @@ This is a plot of two quantitative variables (GDP per capita and year) using Chi
 Countries in Asia whose mean life expectancies are above the world average (60.71) and their mean GDP per capitas graphed: 
 
 ```{r}
+gapminder %>% filter(continent=="Asia", lifeExp>60.71) %>% select(gdpPercap, lifeExp) %>% ggplot(aes(x=gdpPercap, y=lifeExp)) + geom_point(alpha=0.40, colour = "purple")
+```
+
+I decided to log the x axis (GDP per capita) because is it exponential and was not visually informative left as is.
+
+```{r}
 gapminder %>% filter(continent=="Asia", lifeExp>60.71) %>% select(gdpPercap, lifeExp) %>% ggplot(aes(x=log10(gdpPercap), y=lifeExp)) + geom_point(alpha=0.40, colour = "purple")
 ```
 
-I logged the x axis (GDP per capita) because is it almost exponential and was not visually informative left as is. 
-
-
-```{r}
-p2 <- Asia %>% 
-    group_by(country) %>% 
-    summarize(lifeExp=mean(lifeExp), gdpPercap=mean(gdpPercap))
-p2
-```
-A plot of countries in Asia and their mean GDP per capitas:
-
-```{r}
-p3 <- ggplot(p2, aes(x=country, y=gdpPercap))
-p3 + geom_point()
-```
-
-A plot of countries in Asia and their mean life expentancies:
-```{r}
-p4 <- ggplot(p2, aes(x=country, y=lifeExp))
-p4 + geom_point()
-```
+**Another example** 
 
 Using %>%, filter and select to see how population changed between 1952 and 1997 in Zambia. 
 
 ```{r}
 p5 <- gapminder %>% 
     filter(country %in% c("Zambia"), 
-           year <= 2000, year >= 1940) %>% 
+           year <= 1997, year >= 1952) %>% 
     select(country, year, pop)
 ```
 
@@ -267,12 +253,19 @@ p6 <- ggplot(p5, aes(x=year, y=pop))
 p6 + geom_line()
 ```
 
+This was taken from the class notes and amended. We can see that between the time interval selected, the population of Zambia has been on a steadily upwards trend. 
+
+
+
 ## Reporting
 
-This took me much longer than Homework 1, which is expected as it goes into concepts in much more detail. I found the class on piping went a bit over my head, so I had to do some readings and use some online resources to better understand the syntax. 
+This took me much longer than Homework 1, which is expected as it goes into concepts in much more detail. I found the class on piping went a bit over my head, so I had to do some readings and use some online resources to better understand the syntax. This is definitely very new to me and I need to keep constantly referring back to notes/online resources/tutorials. I actually completed about 8 or 9 Swirl modules over the weekend to wrap my head around some of the basics which I maybe didn't totally understand in the first few weeks of this class. I found it really helped, and also helped me answer the first part of this homework (exploring the gapminder object). 
+
+I found I spent a really long time on this homework, and didn't want to overcomplicate things by trying the additional section just yet. Maybe after a few more classes or a bit more practice as I'm still getting the hang of this! 
 
 **Some problems I encountered**
 
-- Colouring my density plot 
+- Colouring my density plot (still can't figure out how).
 - Not getting confused when assigning names to a dataset and then plotting it (sounds stupid but I kept forgetting to name things memorably)
 - Pushing my github doc...
+- It took me a really, really, really, really long time to get the graph of the countires  in Asia whose mean life expectancies are above 60.71 vs. GDP per capita to work. I went over the class notes and got some help online as well, and finally got it to work!  
