@@ -4,7 +4,7 @@ author: "Aisha Uduman"
 date: "September 19, 2017"
 output: 
   github_document: 
-    keep_md: yes
+    keep_md: true
 ---
 
 # Homework 2: Exploring Gapminder
@@ -225,6 +225,7 @@ p + geom_line()
 This is a plot of two quantitative variables (GDP per capita and year) using Chile as an example. We can see from the graph that Chile's GDP per capita is increasing over time, quite drastically in the last 30 years. 
 
 **Trying again:**
+
 Countries in Asia whose mean life expectancies are above the world average (60.71) and their mean GDP per capitas graphed: 
 
 ```{r}
