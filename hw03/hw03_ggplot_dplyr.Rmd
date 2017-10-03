@@ -2,7 +2,7 @@
 title: "hw03_ggplot_dplyr"
 author: "Aisha Uduman"
 date: "October 2, 2017"
-output: html_document
+output: github_document
 ---
 
 # Homework 3: Using dplyr and ggplot2 to manipulate and explore data 
