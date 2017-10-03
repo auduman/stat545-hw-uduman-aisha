@@ -15,3 +15,9 @@ Click [here](https://github.com/auduman/stat545-hw-uduman-aisha/blob/master/hw02
 
 
 ### Homework 3
+
+Click [here](https://github.com/auduman/stat545-hw-uduman-aisha/tree/master/hw03) to see my README file for hw03. 
+
+Click [here](https://github.com/auduman/stat545-hw-uduman-aisha/blob/master/hw03/hw03_ggplot_dplyr.md) to see the .md file for hw03 (which displays the function outputs)
+
+
