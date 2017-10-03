@@ -54,8 +54,8 @@ I then thought it would be good to try and use ggplot to plot both the minimum a
 
 ```{r}
 ggplot(task1, aes(x=continent)) +
-  geom_point(aes(y=min_gdpPercap), colour = "red") +
-  geom_point(aes(y=max_gdpPercap), colour = "green") +
+  geom_point(aes(y=min_gdpPercap), colour = "red", size = 5) +
+  geom_point(aes(y=max_gdpPercap), colour = "green", size = 5) +
   labs(y = "GDP per capita", x = "Continent", title = "Maximum and Minimum GDP per capita for the Continents")
 ```
 
