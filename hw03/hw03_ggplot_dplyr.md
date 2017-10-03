@@ -34,8 +34,6 @@ library(knitr)
 Task 1: Get the maximum and minimum of GDP per capita for all continents
 ------------------------------------------------------------------------
 
-#### Table
-
 To do this, I first grouped the gapminder data by continent using the `group_by` function. Then, I summarized the data based on what we're interested in finding: the minimum and maximum GDP per capita. Below is the code and the table of results:
 
 ``` r
@@ -74,19 +72,23 @@ Something I need to investigate further. I didn't notice a difference in the out
 I thought using a boxplot would be a good option to visualise these results, as a bar graph wouldn't be able to distinguish the data appropriately (i.e. it would just be one bar per continent, minimum GDP per capita to maximum GDP per capita). I wanted a plot that would visualise the range of GDP per capita for each continent.
 
 ``` r
-p1 <- boxplot(gdpPercap ~ continent, data=gapminder, col=c("blue", "green", "yellow", "orange", "red"))
+ggplot(gapminder, aes(continent, gdpPercap, fill=continent)) +
+  geom_boxplot() +
+  scale_fill_manual(values=c("darkslateblue", "olivedrab", "tan3", "orangered3", "maroon4")) + 
+  labs(x = "Continent", y = "GDP per capita", title = "Boxplot of GDP per capita for Continents") + 
+  theme(legend.position = "none")
 ```
 
 ![](hw03_ggplot_dplyr_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-4-1.png)
 
-The boxplot is decent, however I don't think the take-home information is as clear as it could be. This is likely due to the huge range of GDP per capita in the continent of Asia.
+The boxplot is decent, however I don't think the take-home information is as clear as it could be. This is likely due to the huge range of GDP per capita in the continent of Asia. In terms of visualization, I found some colour codes online (link is below) and I decided to leave the legend out as it's self-explanatory that each continent is coloured separately.
 
 I then thought it would be good to try and use ggplot to plot both the minimum and the maximum GDP per capita points for each continent. The minimum could be one colour and the maximum could be a different colour so we can distinguish more easily between the continents. This took me a while but I think I figured it out:
 
 ``` r
 ggplot(task1, aes(x=continent)) +
-  geom_point(aes(y=min_gdpPercap), colour = "red") +
-  geom_point(aes(y=max_gdpPercap), colour = "green") +
+  geom_point(aes(y=min_gdpPercap), colour = "tomato3", size = 5) +
+  geom_point(aes(y=max_gdpPercap), colour = "palegreen4", size = 5) +
   labs(y = "GDP per capita", x = "Continent", title = "Maximum and Minimum GDP per capita for the Continents")
 ```
 
@@ -140,6 +142,7 @@ This gives us our information which we will now plot.
 gapminder %>% 
   ggplot(aes(x=continent, y=gdpPercap)) + 
   geom_boxplot(aes(fill = continent), show.legend = FALSE) + 
+  scale_fill_manual(values=c("darkslateblue", "olivedrab", "tan3", "orangered3", "maroon4")) +
   labs(x = "Country", y = "GDP per capita", title = "Spread of GDP per capita Within Continents")
 ```
 
@@ -198,7 +201,9 @@ The results are here, however it is very hard to visualize this data, especially
 #### Visualization
 
 ``` r
-ggplot(task3, aes(year, lifeExp, color=continent)) + geom_smooth(method="loess", se=FALSE) + labs(x = "Year", y = "Life Expectancy", title = "Life Expectancy Over Time for the Continents")
+ggplot(task3, aes(year, lifeExp, colour=continent)) + geom_smooth(method="loess", se=FALSE) + 
+  scale_colour_manual(values=c("darkslateblue", "olivedrab", "tan3", "orangered3", "maroon4")) +
+  labs(x = "Year", y = "Life Expectancy", title = "Life Expectancy Over Time for the Continents")
 ```
 
 ![](hw03_ggplot_dplyr_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-11-1.png)
@@ -211,7 +216,8 @@ It might be interesting to see the individual points composing these lines, and 
 plot3 <- ggplot(task3, aes(year, lifeExp, colour = continent)) +
     facet_wrap(~ continent) +
     geom_point(alpha=0.4) + 
-  geom_smooth(method='loess', colour = "black", se=FALSE, span = 5) +
+  geom_smooth(method='loess', colour = "black", se=FALSE, span = 5, linetype = "dashed") +
+  scale_colour_manual(values=c("darkslateblue", "olivedrab", "tan3", "orangered3", "maroon4")) +
   labs(x = "Year", y = "Life Expectancy", title = "Life Expectancy of Continents over Time")
 plot3 + theme_bw() +
     theme(strip.background = element_rect(fill="grey"), 
@@ -349,13 +355,14 @@ This table is not very informative on its own, and needs to be visualized using 
 #### Visualization
 
 ``` r
-plot4a <- ggplot(task4a, aes(year, lifeExp)) +
+plot4a <- ggplot(task4a, aes(year, lifeExp, colour=country)) +
     facet_wrap(~ country) +
     geom_point() + 
   geom_line() +
+  scale_colour_manual(values=c("darkslateblue", "dodgerblue4", "cyan4", "olivedrab", "seagreen3")) +
   labs(x = "Year", y = "Life Expectancy", title = "Life Expectancy of Sub-Saharan Africa Worst Affected by HIV/AIDS")
 plot4a + theme_bw() +
-    theme(strip.background = element_rect(fill="orange"))
+    theme(strip.background = element_rect(fill="palegoldenrod"))
 ```
 
 ![](hw03_ggplot_dplyr_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-16-1.png)
@@ -446,13 +453,14 @@ knitr::kable(task4b, digits=2)
 Again, this table is not very informative on its own, and needs to be visualized using ggplot. I used basically the same code as earlier but with the dataset made for Northern African countries:
 
 ``` r
-plot4b <- ggplot(task4b, aes(year, lifeExp)) +
+plot4b <- ggplot(task4b, aes(year, lifeExp, colour=country)) +
     facet_wrap(~ country) +
     geom_point() + 
   geom_line() +
+  scale_colour_manual(values=c("orange2", "sienna2", "orangered2", "firebrick", "mediumvioletred")) +
   labs(x = "Year", y = "Life Expectancy", title = "Life Expectancy of Northern Africa Least Affected by HIV/AIDS")
 plot4b + theme_bw() +
-    theme(strip.background = element_rect(fill="orange"))
+    theme(strip.background = element_rect(fill="honeydew2"))
 ```
 
 ![](hw03_ggplot_dplyr_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-18-1.png)
@@ -507,7 +515,9 @@ This tells us for each year, how many countries in each continent have an averag
 ggplot(task5, aes(year, number, colour = continent)) + 
   facet_wrap(~ continent) + 
   geom_point() + 
-  labs (x = "Year", y = "Number of Countries with Life Expectancy < 60", title = "Absolute Abundance of Countries with Low Life Expectancy over Time")
+  scale_colour_manual(values=c("darkslateblue", "olivedrab", "tan3", "orangered3", "maroon4")) +
+  labs (x = "Year", y = "Number of Countries with Life Expectancy < 60", title = "Absolute Abundance of Countries with Low Life Expectancy over Time") + 
+  theme(strip.background = element_rect(fill="rosybrown3"))
 ```
 
 ![](hw03_ggplot_dplyr_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-21-1.png)
@@ -523,11 +533,13 @@ I found this homework fairly challenging, as I'm still grasping a handle on R an
 
 -   Limiting the Task 1 table to 2 decimal places, which would be appropriate for the audience. I figured out later that there is an argument in the 'kable' function that allows you to set digits, so I set it to 2 and was glad that the results are now displayed to 2 decimal places.
 
--   I'm not sure what the knitr::kable does to my tables, as I can't notice a difference. I will look into this further. I would like to get familiar with this and be able to customize my table outputs to make them more informative and aesthetic.
+-   I'm not sure what the knitr::kable does to my tables, as I can't notice a difference. I will look into this further. I would like to get familiar with this and be able to customize my table outputs to make them more informative and aesthetic. I think the difference can be seen in the github output, just maybe not in the console?
+
+-   Understanding the difference between colour= and fill=, both of which I used. For example, I tried using fill=continent for the visualization of Task 3, however the manual colours I chose using `scale_fill_manual` seemed to be overrided by something, as all continents came out blue. When I use colour=continent in the aes, R automatically distinguishes each continent by colour, so I then defined the colour by using `scale_colour_manual` followed by a vector of my colour choices. This seemed to work (I wanted my continent colours to be consistent throughout this entire exercise), but I need to more clearly understand the difference between colour= and fill= !
 
 -   I'm sure there is a more efficient way to compare the minimum and maximum GDP per capita on the same plot than the method I used - hopefully that will become clear soon!
 
--   My facetted plots for Task 3 look okay, however I wanted the smooth line to be black but with some transparency. I found changing the alpha value didn't do anything here.
+-   My facetted plots for Task 3 look okay, however I wanted the smooth line to be black but with some transparency. I found changing the alpha value didn't do anything here, and I would like to learn how to adjust the transparency of this.
 
 -   Determining how many countries had life expectancy below 60 for Task 5 took me a long time...there is no reason for that other than I just wasn't thinking straight. I realised the number of countries under this category would correspond to the length of rows of output, and once I realized that it made sense.
 
@@ -536,3 +548,11 @@ I found this homework fairly challenging, as I'm still grasping a handle on R an
 -   I enjoy the visualizations more than anything else, and though it takes a while I find it interesting to play with colours, scales, axis titles and different plotting styles. As a beginner myself I hope I ended up choosing appropriate styles that were both informative as well as visually easy to understand and pleasing.
 
 -   I tried out a few trends I thought would be interesting to visualize (e.g. Effect of South Asian tsunami on GDP per capita for the worst-affected countries) however the dataset wasn't appropriate for such visualizations and didn't have enough recent data to be able to really deduce a trend. It was a good experience nonetheless, and I used much of the same code to do Task 4, so it wasn't a complete waste of time!
+
+**Useful Links**
+
+-   ggplot [quick reference for colour and fill](http://sape.inf.usi.ch/quick-reference/ggplot2/colour)
+
+-   Customizing [boxplot axis labels](http://t-redactyl.io/blog/2016/04/creating-plots-in-r-using-ggplot2-part-10-boxplots.html) and [fill colour](http://www.r-graph-gallery.com/264-control-ggplot2-boxplot-colors/)
+
+-
