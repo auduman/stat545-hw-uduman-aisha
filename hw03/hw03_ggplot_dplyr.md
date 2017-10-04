@@ -148,7 +148,7 @@ gapminder %>%
 
 ![](hw03_ggplot_dplyr_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-8-1.png)
 
-This is essentially the same as the initial boxplot I made in Task 1. We can see that Asia has the largest spread, however I think there is a better way to visualize the information made in the initial dataframe for this task: Instead of including the mean, minimum, maximum and standard deviation, I think it would be more useful to show the mean, median and standard deviation:
+This is essentially the same as the initial boxplot I made in Task 1. We can see that Asia has the largest spread, however I think there is a better way to visualize the information made in the initial dataframe for this task: Instead of including the mean, minimum, maximum and standard deviation, I think it would be more useful to show the mean and standard deviation:
 
 ``` r
 gapminder %>%
@@ -161,14 +161,15 @@ gapminder %>%
   theme(axis.title = element_text(size=14),
         axis.text.x = element_text(size=12),
         axis.text.y = element_text(size=12),
-        plot.title = element_text(size=16, hjust = 0.5))
+        plot.title = element_text(size=16, hjust = 0.5),
+        legend.position = "right")
 ```
 
 ![](hw03_ggplot_dplyr_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-9-1.png)
 
 I played around with this a bit. I tried plotting the minimum GDP per capita, maximum GDP per capita, mean GDP per capita and standard deviation, however because of the huge range of GDP per capitas in Asia, I found this made it hard to determine trends using the other variables like standard deviation, as the symbols seemed to just overlap. Hence I decided to stick with the mean GDP per capita and standard deviation to determine spread. I decided to just look at standard deviation in relation to the mean as this is a widely used measure of dispersion which takes into account every variable in the dataset (unlike median, interquartile range, maximum and minimums). A high standard deviation indicates values are spread apart, a low standard deviation indicates values are similar and dispersed closely around the mean.
 
-Though this also isn't super aesthetically pleasing, I think this tells us the information we want to know. We can see that Asia has the highest standard deviation of all the continents, likely due to the presence of extremely wealthy nations such as Kuwait and Saudi Arabia, as well as very poor nations. Africa has the lowest standard deviation.
+Though this also isn't super aesthetically pleasing, I think this tells us the information we want to know. We can see that Asia has the highest standard deviation of all the continents, likely due to the presence of extremely wealthy nations such as Kuwait and Saudi Arabia, as well as very poor nations. Africa has the lowest standard deviation. I'm not too sure if this is correct - I also couldn't get the legend to show up, despite the colours being inside the `aes`...
 
 What I found interesting was Oceania, which has the second-lowest standard deviation and the highest average GDP per capita of all the continents. I'm not sure why this is. I know Australia and New Zealand will have relatively high GDPs per capita, however I'm not sure how much the smaller nations such as Tonga, Samoa, Vanuatu etc would have a high GDP per capita - perhaps it's due to their small populations? Something to look into further.
 
@@ -370,7 +371,7 @@ plot4a + theme_bw() +
 
 ![](hw03_ggplot_dplyr_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-16-1.png)
 
-This is very interesting - for each country worst affected by HIV/AIDS we can see a sharp decline in life expectancies all occuring between 1985-1990. \*\*MOre info about epidemic with links). Something promising is the upwards trend seen in Botswana and Zimbabwe.
+This is very interesting - for each country worst affected by HIV/AIDS we can see a sharp decline in life expectancies all occuring between 1985-1990. This makes sense as the [AIDS epidemic](https://www.avert.org/professionals/history-hiv-aids/overview) hit hardest in the late 1970's-early 1980's, before which time most people had never heard of the disease. Something promising is the upwards trend seen in Botswana and Zimbabwe.
 
 Now to look at Northern Africa:
 
