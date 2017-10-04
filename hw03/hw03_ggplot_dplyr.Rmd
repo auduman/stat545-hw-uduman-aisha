@@ -170,36 +170,46 @@ What I found interesting was Oceania, which has the second-lowest standard devia
 ## Task 3: Find out how life expectancy is changing with time on different continents 
 
 
-For this task, first I will select the relevant variables (continent, year and life expectancy) from the gapminder dataset, and then group the results by continent to see how life expectancy is changing over time. 
+For this task, first I will select the relevant variables (continent, year and life expectancy) from the gapminder dataset, and then group the results by continent to see how life expectancy is changing over time. After a lot of googling and a really big facepalm, I realised I could use the `head` function to only display the first 20 rows of this really, really long table. That took me way more time than it should have...
 
 ```{r}
-task3 <- gapminder %>%
-    select(continent, year, lifeExp) %>%
-    group_by(continent, year)
+task3 <- gapminder %>% 
+  group_by(continent,year) %>% 
+  summarise(mean_lifeExp=mean(lifeExp)) %>% 
+  head(20)
 knitr::kable(task3, digits=2)
 ```
+
 
 The results are here, however it is very hard to visualize this data, especially if we're looking at longer time spans. For this information to be meaningful, we need to visualize it using ggplot: 
 
 
 #### Visualization 
 
-
 ```{r}
-ggplot(task3, aes(year, lifeExp, colour=continent)) + geom_smooth(method="loess", se=FALSE) + 
+ggplot(gapminder %>% 
+  group_by(continent,year) %>% 
+  summarise(mean_lifeExp=mean(lifeExp)), 
+  aes(year, mean_lifeExp, group=continent, colour=continent)) + 
+  geom_smooth(method="loess", se=FALSE) + 
   scale_colour_manual(values=c("darkslateblue", "olivedrab", "tan3", "orangered3", "maroon4")) +
-  labs(x = "Year", y = "Life Expectancy", title = "Life Expectancy Over Time for the Continents")
+  labs(x = "Year", y = "Life Expectancy", title = "Life Expectancy Over Time for the Continents") + 
+  theme(axis.title = element_text(size=14),
+        axis.text.x = element_text(size=12),
+        axis.text.y = element_text(size=12),
+        plot.title = element_text(size=16, hjust = 0.5))
 ```
 
 
 This is much more informative. We can see how life expectancy is changing over time for each continent, which is coloured inidividually. It appears tha Africa's life expectancy was increasing from 1950 to around 1986-7, after which it started to plateau. Asia seemed to have had the steepest rise in life expectancy, though it slowed down towards 1990. The Americas and Europe both have shown increases in life expectancy, though at difference rates, but the trend is upward. Oceania as well shows an upward trend, despite going through a slow patch between 1960-1980. 
 
+One thing that I find annoying is how long the table is - and if there is a way to either condense the data to make it more visually pleasing? I used the `head` function, however when I tried plotting task 3 it only plotted the first 20 values which were displayed (I thought it only affects how many values are displayed, not how many values exist...need to consolidate this more). I ended up going back and using the Gapminder dataset for the plot, not the task3 one I created. 
 
 
 It might be interesting to see the individual points composing these lines, and to be able to identify any outliers. For this we should use facetting: 
 
 ```{r, fig.width=8, fig.height=6}
-plot3 <- ggplot(task3, aes(year, lifeExp, colour = continent)) +
+plot3 <- ggplot(gapminder, aes(year, lifeExp, colour = continent)) +
     facet_wrap(~ continent) +
     geom_point(alpha=0.4) + 
   geom_smooth(method='loess', colour = "black", se=FALSE, span = 5, linetype = "dashed") +
@@ -260,7 +270,6 @@ What I hope to do is graph the Northern African countries separately to the Sub-
 task4a <- gapminder %>% 
     select(country, year, lifeExp) %>% 
   filter(country %in% c("", "Swaziland", "Lesotho", "Botswana", "South Africa", "Zimbabwe"), year <=2015, year >= 1960)
-task4a
 knitr::kable(task4a, digits=2)
 ```
 
@@ -293,7 +302,6 @@ Now to look at Northern Africa:
 task4b <- gapminder %>% 
     select(country, year, lifeExp) %>% 
   filter(country %in% c("", "Algeria", "Tunisia", "Egypt", "Morocco", "Sudan"), year <=2015, year >= 1960)
-task4b
 knitr::kable(task4b, digits=2)
 ```
 
@@ -340,7 +348,7 @@ task5 <- gapminder %>%
   group_by(continent, year) %>% 
   filter(lifeExp <= 60) %>% 
   summarize(number = length(country))
-task5
+knitr::kable(task5)
 ```
 
 
@@ -352,7 +360,7 @@ task5b <- gapminder %>%
   group_by(continent, year) %>% 
   filter(lifeExp <= 60) %>% 
   summarize(number = n_distinct(country))
-task5b
+knitr::kable(task5b)
 ```
 
 
@@ -390,7 +398,6 @@ I found this homework fairly challenging, as I'm still grasping a handle on R an
 
 - Limiting the Task 1 table to 2 decimal places, which would be appropriate for the audience. I figured out later that there is an argument in the 'kable' function that allows you to set digits, so I set it to 2 and was glad that the results are now displayed to 2 decimal places. 
 
-- I'm not sure what the knitr::kable does to my tables, as I can't notice a difference. I will look into this further. I would like to get familiar with this and be able to customize my table outputs to make them more informative and aesthetic. I think the difference can be seen in the github output, just maybe not in the console? 
 
 - Understanding the difference between colour= and fill=, both of which I used. For example, I tried using fill=continent for the visualization of Task 3, however the manual colours I chose using `scale_fill_manual` seemed to be overrided by something, as all continents came out blue. When I use colour=continent in the aes, R automatically distinguishes each continent by colour, so I then defined the colour by using `scale_colour_manual` followed by a vector of my colour choices. This seemed to work (I wanted my continent colours to be consistent throughout this entire exercise), but I need to more clearly understand the difference between colour= and fill= !
 
