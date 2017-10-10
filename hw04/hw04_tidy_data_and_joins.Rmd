@@ -249,6 +249,9 @@ knitr::kable(innerjoin2, col.names = c("Continent", "Avg Population (2007)", "Po
 
 Again, I struggled to use wide format data in ggplot, whereas I know the exact same graph could have been made using the long data in far less time (and also allow for more manipulation). I'm wondering what data might be better to plot in wide format...? I also wasn't sure if I was able to add multiple national languages, however after trying it out (by just using a comma to separate the languages within the ""), it worked. I can see this being a problem if I would need to filter by language though - i.e. I would need to filter by "English,""", "English, French"" or """, French""). I'm not sure if there's an easier way to do this, maybe add another column for other national languages? But there are some countries like South Africa that have 11 national languages - I'm interested in seeing if there is a way around this. 
 
+To be honest this homework took way longer than expected and I didn't have the time to attempt to do any of the other activities. I can see why making a cheatsheet would be really useful - hopefully I will peer review one and learn in the process! 
+
+
 
 #### Useful Links 
 
