@@ -20,7 +20,9 @@ suppressPackageStartupMessages(library(knitr))
 ## General Data Reshaping and Relationship to Aggregation 
 
 
+
 #### Activity #2 
+
 
 Make a tibble with one row per year and columns for life expectancy for two or more countries. Use knitr::kable() to make this table look pretty in your rendered homework. Take advantage of this new data shape to scatterplot life expectancy for one country against that of another.
 
@@ -51,10 +53,13 @@ knitr::kable(lifeExp_year, digits = 2, col.names = c("Year", "Canada Life Expect
 
 I wanted to change the column names to something more informative and found that the `col.names` argument can do this for me.
 
+
+
 #### Scatterplot of life expectancy: Canada vs Indonesia 
 
 
-After forming the new dataset, I noticed right away the huge difference in life expectancies between Canada and Indonesia, especially in the 1950's-1970's. I thought this would be a good example to plot and visualize how life expectancies for the two countries changed over time.
+After forming the new dataset, I noticed right away the huge difference in life expectancies between Canada and Indonesia, especially in the 1950's-1970's. I thought this would be a good example to plot and visualize how life expectancies for the two countries changed over time. I wasn't sure how to do this initially using this new dataframe, as now each country had it's own row and I couldn't simply plot by year and life expectancy and then filter by country...
+
 
 **Attempt #1** 
 
@@ -62,7 +67,7 @@ After forming the new dataset, I noticed right away the huge difference in life 
 ```{r}
 lifeExp_year %>% 
   select(year, Canada, Indonesia) %>% 
-  ggplot(aes(x = year, y = c(Canada))) +
+  ggplot(aes(x = year, y = Canada)) +
          geom_point()
 ```
 
@@ -70,6 +75,8 @@ This didn't work, it only plotted Canada and not Indonesia.
 
 
 **Attempt #2** 
+
+I added another geom_point layer for Indonesia. This can't be the best way to do this, but it's what worked...I'd be interested in finding out if there's a simpler way to approach this problem. 
 
 
 ```{r}
@@ -104,13 +111,18 @@ Create a second data frame, complementary to Gapminder. Join this with (part of)
 
 One row per country, a country variable and one or more variables with extra info, such as language spoken, NATO membership, national animal, or capitol city.
 
+I decided to take some random countries that came to my mind and look at the variables I'm personally interested in: national animal and national language(s). 
+
 ```{r}
 country <- c("Bangladesh","Canada","Guatemala","India","Papua New Guinea","Romania","Russia","Qatar","Somalia")
 nat_animal <- c("Bengal Tiger","Beaver","Quetzal","King Cobra","Dugong","Lynx","Eurasian Brown Bear","Arabian Oryx","Leopard")
-nat_language <- c("Bengali", "English, French", "Spanish", "Hindi", "Hiri Motu", "Romanian", "Russian", "Arabic", "Somali") 
+nat_language <- c("Bengali", "English, French", "Spanish", "Hindi, English", "Hiri Motu, Tok Pisin, English", "Romanian", "Russian, Azerbaijani, Ukranian, Chuvash, Tatar, Tuvin", "Arabic", "Somali, Arabic") 
 activity_1 <- data.frame(country, nat_animal, nat_language)
 knitr::kable(activity_1)
 ```
+
+Then I made another dataframe from the original Gapminder dataset, filtering by the countries included in my first dataframe and summarizing by other variables mean GDP per capita and mean life expectancy. 
+
 
 ```{r}
 gapminder_2 <- gapminder %>% 
@@ -133,7 +145,7 @@ knitr::kable(leftjoin)
 ```
 
 
-We can see that the rows for Papua New Guinea, Russia and Qatar all have NA's, implying that Gapminder does not contain data for those countries. 
+We can see that the rows for Papua New Guinea, Russia and Qatar all have NA's, implying that Gapminder does not contain data for those countries, but they are kept as they exist in the first dataframe (activity_1). 
 
 
 
@@ -151,9 +163,11 @@ knitr::kable(innerjoin)
 The Gapminder dataset does not have data for the countries Papua New Guinea, Russia or Qatar. This is why there are 3 less rows than the `left_join` output (72 rows versus 75).
 
 
+
 #### Semi join
 
 This will return all rows from activity_1 where there are matching values in the Gapminder dataset, and keeps just the columns from activity_1 dataset. 
+
 
 ```{r}
 semijoin <- semi_join(activity_1, gapminder_2, by="country")
@@ -161,21 +175,26 @@ knitr::kable(semijoin)
 ```
 
 
+
 #### Anti join 
 
-This returns all rows from the gapminder dataset where there are NOT matching values in the activity_1 dataset, and it keeps just the columns from activity_1. 
+This is the opposite of `semi_join`, and returns all rows from the gapminder dataset where there are NOT matching values in the activity_1 dataset, and it keeps just the columns from activity_1. 
+
 
 ```{r}
 antijoin <- anti_join(activity_1, gapminder_2, by="country")
 knitr::kable(antijoin)
 ```
 
+
 I guess this can be useful for when you have massive datasets and you need to know what values (in this case countries) are not common. 
+
+
 
 
 #### Full join 
 
-This will return all rows and all columns from both the activity_1 dataset and the gapminder_2 dataset. 
+This will return all rows and all columns from both the activity_1 dataset and the gapminder_2 dataset.
 
 
 ```{r}
@@ -183,7 +202,9 @@ fulljoin <- full_join(activity_1, gapminder_2, by="country")
 knitr::kable(fulljoin)
 ```
 
-We can see that the values for the three countries not included in the gapminder dataset have 'NA' values as they cannot be populated by this dataset. 
+We can see that the values for the three countries not included in the gapminder dataset have 'NA' values as they cannot be populated by this dataset. In this case, the output is the same as the `left_join` output, however if we were to use the entire Gapminder dataset instead of the smaller gapminder_2 dataframe I made, the output would be much larger. 
+
+
 
 
 #### One row per continent, a continent variable and one or more variables with extra info, such as northern versus southern hemisphere.
@@ -197,8 +218,9 @@ pop2007 <- gapminder %>%
   filter(year==2007) %>% 
   group_by(continent) %>% 
   summarise(Average_Population=mean(pop))
-pop2007
+knitr::kable(pop2007)
 ```
+
 
 I then had to make a dataframe for continent variables (west or east of Atlantic Ocean) - this is kind of silly in my opinion but I couldn't think of many suitable continent-wide variables where continents weren't cut off in some places. 
 
@@ -211,11 +233,13 @@ ocean <- data.frame(continent, atlantic_ocean)
 knitr::kable(ocean)
 ```
 
+
 Now we join this new dataframe with the continent variable  with the gapminder dataset we made before summarizing continent by average population in the year of 2007: 
+
 
 ```{r}
 innerjoin2 <- inner_join(pop2007, ocean, by="continent")
-knitr::kable(innerjoin2)
+knitr::kable(innerjoin2, col.names = c("Continent", "Avg Population (2007)", "Position to Atlantic Ocean"))
 ```
 
 
@@ -223,11 +247,8 @@ knitr::kable(innerjoin2)
 
 ## Reporting my process 
 
-How do I add 2 national languages to certain countries? YES - put it inside the parentheses for the languages. However, this becomes a problem if I need to filter (i.e. I would need to filter by "English,""", "English, French"" or """, French""). I'm not sure if there's an easier way to do this, maybe add another column for other national languages? But there are some countries like South Africa that have 11 national languages - I'm interested in seeing if there is a way around this. 
-Join two datasets with different levels
+Again, I struggled to use wide format data in ggplot, whereas I know the exact same graph could have been made using the long data in far less time (and also allow for more manipulation). I'm wondering what data might be better to plot in wide format...? I also wasn't sure if I was able to add multiple national languages, however after trying it out (by just using a comma to separate the languages within the ""), it worked. I can see this being a problem if I would need to filter by language though - i.e. I would need to filter by "English,""", "English, French"" or """, French""). I'm not sure if there's an easier way to do this, maybe add another column for other national languages? But there are some countries like South Africa that have 11 national languages - I'm interested in seeing if there is a way around this. 
 
-
-Again, I struggled to use wide format data in ggplot, whereas I know the exact same graph could have been made using the long data in far less time (and also allow for more manipulation). I'm wondering what data might be better to plot in wide format...? 
 
 #### Useful Links 
 

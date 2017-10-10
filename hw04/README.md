@@ -1,6 +1,5 @@
 # README
-Aisha Uduman  
-10/9/2017  
+
 
 **Click [here](https://github.com/auduman/stat545-hw-uduman-aisha) to go back my main homework page.** 
 

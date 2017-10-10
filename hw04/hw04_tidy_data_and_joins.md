@@ -64,14 +64,14 @@ I wanted to change the column names to something more informative and found that
 
 #### Scatterplot of life expectancy: Canada vs Indonesia
 
-After forming the new dataset, I noticed right away the huge difference in life expectancies between Canada and Indonesia, especially in the 1950's-1970's. I thought this would be a good example to plot and visualize how life expectancies for the two countries changed over time.
+After forming the new dataset, I noticed right away the huge difference in life expectancies between Canada and Indonesia, especially in the 1950's-1970's. I thought this would be a good example to plot and visualize how life expectancies for the two countries changed over time. I wasn't sure how to do this initially using this new dataframe, as now each country had it's own row and I couldn't simply plot by year and life expectancy and then filter by country...
 
 **Attempt \#1**
 
 ``` r
 lifeExp_year %>% 
   select(year, Canada, Indonesia) %>% 
-  ggplot(aes(x = year, y = c(Canada))) +
+  ggplot(aes(x = year, y = Canada)) +
          geom_point()
 ```
 
@@ -80,6 +80,8 @@ lifeExp_year %>%
 This didn't work, it only plotted Canada and not Indonesia.
 
 **Attempt \#2**
+
+I added another geom\_point layer for Indonesia. This can't be the best way to do this, but it's what worked...I'd be interested in finding out if there's a simpler way to approach this problem.
 
 ``` r
 ggplot(lifeExp_year, aes(year)) + 
@@ -109,25 +111,29 @@ Create a second data frame, complementary to Gapminder. Join this with (part of)
 
 One row per country, a country variable and one or more variables with extra info, such as language spoken, NATO membership, national animal, or capitol city.
 
+I decided to take some random countries that came to my mind and look at the variables I'm personally interested in: national animal and national language(s).
+
 ``` r
 country <- c("Bangladesh","Canada","Guatemala","India","Papua New Guinea","Romania","Russia","Qatar","Somalia")
 nat_animal <- c("Bengal Tiger","Beaver","Quetzal","King Cobra","Dugong","Lynx","Eurasian Brown Bear","Arabian Oryx","Leopard")
-nat_language <- c("Bengali", "English, French", "Spanish", "Hindi", "Hiri Motu", "Romanian", "Russian", "Arabic", "Somali") 
+nat_language <- c("Bengali", "English, French", "Spanish", "Hindi, English", "Hiri Motu, Tok Pisin, English", "Romanian", "Russian, Azerbaijani, Ukranian, Chuvash, Tatar, Tuvin", "Arabic", "Somali, Arabic") 
 activity_1 <- data.frame(country, nat_animal, nat_language)
 knitr::kable(activity_1)
 ```
 
-| country          | nat\_animal         | nat\_language   |
-|:-----------------|:--------------------|:----------------|
-| Bangladesh       | Bengal Tiger        | Bengali         |
-| Canada           | Beaver              | English, French |
-| Guatemala        | Quetzal             | Spanish         |
-| India            | King Cobra          | Hindi           |
-| Papua New Guinea | Dugong              | Hiri Motu       |
-| Romania          | Lynx                | Romanian        |
-| Russia           | Eurasian Brown Bear | Russian         |
-| Qatar            | Arabian Oryx        | Arabic          |
-| Somalia          | Leopard             | Somali          |
+| country          | nat\_animal         | nat\_language                                         |
+|:-----------------|:--------------------|:------------------------------------------------------|
+| Bangladesh       | Bengal Tiger        | Bengali                                               |
+| Canada           | Beaver              | English, French                                       |
+| Guatemala        | Quetzal             | Spanish                                               |
+| India            | King Cobra          | Hindi, English                                        |
+| Papua New Guinea | Dugong              | Hiri Motu, Tok Pisin, English                         |
+| Romania          | Lynx                | Romanian                                              |
+| Russia           | Eurasian Brown Bear | Russian, Azerbaijani, Ukranian, Chuvash, Tatar, Tuvin |
+| Qatar            | Arabian Oryx        | Arabic                                                |
+| Somalia          | Leopard             | Somali, Arabic                                        |
+
+Then I made another dataframe from the original Gapminder dataset, filtering by the countries included in my first dataframe and summarizing by other variables mean GDP per capita and mean life expectancy.
 
 ``` r
 gapminder_2 <- gapminder %>% 
@@ -161,19 +167,19 @@ leftjoin <- left_join(activity_1, gapminder_2, by="country")
 knitr::kable(leftjoin)
 ```
 
-| country          | nat\_animal         | nat\_language   |  mean\_gdpPercap|  mean\_lifeExp|
-|:-----------------|:--------------------|:----------------|----------------:|--------------:|
-| Bangladesh       | Bengal Tiger        | Bengali         |         817.5588|       49.83408|
-| Canada           | Beaver              | English, French |       22410.7463|       74.90275|
-| Guatemala        | Quetzal             | Spanish         |        4015.4028|       56.72942|
-| India            | King Cobra          | Hindi           |        1057.2963|       53.16608|
-| Papua New Guinea | Dugong              | Hiri Motu       |               NA|             NA|
-| Romania          | Lynx                | Romanian        |        7300.1700|       68.29067|
-| Russia           | Eurasian Brown Bear | Russian         |               NA|             NA|
-| Qatar            | Arabian Oryx        | Arabic          |               NA|             NA|
-| Somalia          | Leopard             | Somali          |        1140.7933|       40.98867|
+| country          | nat\_animal         | nat\_language                                         |  mean\_gdpPercap|  mean\_lifeExp|
+|:-----------------|:--------------------|:------------------------------------------------------|----------------:|--------------:|
+| Bangladesh       | Bengal Tiger        | Bengali                                               |         817.5588|       49.83408|
+| Canada           | Beaver              | English, French                                       |       22410.7463|       74.90275|
+| Guatemala        | Quetzal             | Spanish                                               |        4015.4028|       56.72942|
+| India            | King Cobra          | Hindi, English                                        |        1057.2963|       53.16608|
+| Papua New Guinea | Dugong              | Hiri Motu, Tok Pisin, English                         |               NA|             NA|
+| Romania          | Lynx                | Romanian                                              |        7300.1700|       68.29067|
+| Russia           | Eurasian Brown Bear | Russian, Azerbaijani, Ukranian, Chuvash, Tatar, Tuvin |               NA|             NA|
+| Qatar            | Arabian Oryx        | Arabic                                                |               NA|             NA|
+| Somalia          | Leopard             | Somali, Arabic                                        |        1140.7933|       40.98867|
 
-We can see that the rows for Papua New Guinea, Russia and Qatar all have NA's, implying that Gapminder does not contain data for those countries.
+We can see that the rows for Papua New Guinea, Russia and Qatar all have NA's, implying that Gapminder does not contain data for those countries, but they are kept as they exist in the first dataframe (activity\_1).
 
 #### Inner join
 
@@ -195,9 +201,9 @@ knitr::kable(innerjoin)
 | Bangladesh | Bengal Tiger | Bengali         |         817.5588|       49.83408|
 | Canada     | Beaver       | English, French |       22410.7463|       74.90275|
 | Guatemala  | Quetzal      | Spanish         |        4015.4028|       56.72942|
-| India      | King Cobra   | Hindi           |        1057.2963|       53.16608|
+| India      | King Cobra   | Hindi, English  |        1057.2963|       53.16608|
 | Romania    | Lynx         | Romanian        |        7300.1700|       68.29067|
-| Somalia    | Leopard      | Somali          |        1140.7933|       40.98867|
+| Somalia    | Leopard      | Somali, Arabic  |        1140.7933|       40.98867|
 
 The Gapminder dataset does not have data for the countries Papua New Guinea, Russia or Qatar. This is why there are 3 less rows than the `left_join` output (72 rows versus 75).
 
@@ -221,13 +227,13 @@ knitr::kable(semijoin)
 | Bangladesh | Bengal Tiger | Bengali         |
 | Canada     | Beaver       | English, French |
 | Guatemala  | Quetzal      | Spanish         |
-| India      | King Cobra   | Hindi           |
+| India      | King Cobra   | Hindi, English  |
 | Romania    | Lynx         | Romanian        |
-| Somalia    | Leopard      | Somali          |
+| Somalia    | Leopard      | Somali, Arabic  |
 
 #### Anti join
 
-This returns all rows from the gapminder dataset where there are NOT matching values in the activity\_1 dataset, and it keeps just the columns from activity\_1.
+This is the opposite of `semi_join`, and returns all rows from the gapminder dataset where there are NOT matching values in the activity\_1 dataset, and it keeps just the columns from activity\_1.
 
 ``` r
 antijoin <- anti_join(activity_1, gapminder_2, by="country")
@@ -240,11 +246,11 @@ antijoin <- anti_join(activity_1, gapminder_2, by="country")
 knitr::kable(antijoin)
 ```
 
-| country          | nat\_animal         | nat\_language |
-|:-----------------|:--------------------|:--------------|
-| Papua New Guinea | Dugong              | Hiri Motu     |
-| Russia           | Eurasian Brown Bear | Russian       |
-| Qatar            | Arabian Oryx        | Arabic        |
+| country          | nat\_animal         | nat\_language                                         |
+|:-----------------|:--------------------|:------------------------------------------------------|
+| Papua New Guinea | Dugong              | Hiri Motu, Tok Pisin, English                         |
+| Russia           | Eurasian Brown Bear | Russian, Azerbaijani, Ukranian, Chuvash, Tatar, Tuvin |
+| Qatar            | Arabian Oryx        | Arabic                                                |
 
 I guess this can be useful for when you have massive datasets and you need to know what values (in this case countries) are not common.
 
@@ -263,19 +269,19 @@ fulljoin <- full_join(activity_1, gapminder_2, by="country")
 knitr::kable(fulljoin)
 ```
 
-| country          | nat\_animal         | nat\_language   |  mean\_gdpPercap|  mean\_lifeExp|
-|:-----------------|:--------------------|:----------------|----------------:|--------------:|
-| Bangladesh       | Bengal Tiger        | Bengali         |         817.5588|       49.83408|
-| Canada           | Beaver              | English, French |       22410.7463|       74.90275|
-| Guatemala        | Quetzal             | Spanish         |        4015.4028|       56.72942|
-| India            | King Cobra          | Hindi           |        1057.2963|       53.16608|
-| Papua New Guinea | Dugong              | Hiri Motu       |               NA|             NA|
-| Romania          | Lynx                | Romanian        |        7300.1700|       68.29067|
-| Russia           | Eurasian Brown Bear | Russian         |               NA|             NA|
-| Qatar            | Arabian Oryx        | Arabic          |               NA|             NA|
-| Somalia          | Leopard             | Somali          |        1140.7933|       40.98867|
+| country          | nat\_animal         | nat\_language                                         |  mean\_gdpPercap|  mean\_lifeExp|
+|:-----------------|:--------------------|:------------------------------------------------------|----------------:|--------------:|
+| Bangladesh       | Bengal Tiger        | Bengali                                               |         817.5588|       49.83408|
+| Canada           | Beaver              | English, French                                       |       22410.7463|       74.90275|
+| Guatemala        | Quetzal             | Spanish                                               |        4015.4028|       56.72942|
+| India            | King Cobra          | Hindi, English                                        |        1057.2963|       53.16608|
+| Papua New Guinea | Dugong              | Hiri Motu, Tok Pisin, English                         |               NA|             NA|
+| Romania          | Lynx                | Romanian                                              |        7300.1700|       68.29067|
+| Russia           | Eurasian Brown Bear | Russian, Azerbaijani, Ukranian, Chuvash, Tatar, Tuvin |               NA|             NA|
+| Qatar            | Arabian Oryx        | Arabic                                                |               NA|             NA|
+| Somalia          | Leopard             | Somali, Arabic                                        |        1140.7933|       40.98867|
 
-We can see that the values for the three countries not included in the gapminder dataset have 'NA' values as they cannot be populated by this dataset.
+We can see that the values for the three countries not included in the gapminder dataset have 'NA' values as they cannot be populated by this dataset. In this case, the output is the same as the `left_join` output, however if we were to use the entire Gapminder dataset instead of the smaller gapminder\_2 dataframe I made, the output would be much larger.
 
 #### One row per continent, a continent variable and one or more variables with extra info, such as northern versus southern hemisphere.
 
@@ -286,17 +292,16 @@ pop2007 <- gapminder %>%
   filter(year==2007) %>% 
   group_by(continent) %>% 
   summarise(Average_Population=mean(pop))
-pop2007
+knitr::kable(pop2007)
 ```
 
-    ## # A tibble: 5 x 2
-    ##   continent Average_Population
-    ##      <fctr>              <dbl>
-    ## 1    Africa           17875763
-    ## 2  Americas           35954847
-    ## 3      Asia          115513752
-    ## 4    Europe           19536618
-    ## 5   Oceania           12274974
+| continent |  Average\_Population|
+|:----------|--------------------:|
+| Africa    |             17875763|
+| Americas  |             35954847|
+| Asia      |            115513752|
+| Europe    |             19536618|
+| Oceania   |             12274974|
 
 I then had to make a dataframe for continent variables (west or east of Atlantic Ocean) - this is kind of silly in my opinion but I couldn't think of many suitable continent-wide variables where continents weren't cut off in some places.
 
@@ -320,23 +325,21 @@ Now we join this new dataframe with the continent variable with the gapminder da
 
 ``` r
 innerjoin2 <- inner_join(pop2007, ocean, by="continent")
-knitr::kable(innerjoin2)
+knitr::kable(innerjoin2, col.names = c("Continent", "Avg Population (2007)", "Position to Atlantic Ocean"))
 ```
 
-| continent |  Average\_Population| atlantic\_ocean |
-|:----------|--------------------:|:----------------|
-| Africa    |             17875763| East            |
-| Americas  |             35954847| West            |
-| Asia      |            115513752| East            |
-| Europe    |             19536618| West            |
-| Oceania   |             12274974| West            |
+| Continent |  Avg Population (2007)| Position to Atlantic Ocean |
+|:----------|----------------------:|:---------------------------|
+| Africa    |               17875763| East                       |
+| Americas  |               35954847| West                       |
+| Asia      |              115513752| East                       |
+| Europe    |               19536618| West                       |
+| Oceania   |               12274974| West                       |
 
 Reporting my process
 --------------------
 
-How do I add 2 national languages to certain countries? YES - put it inside the parentheses for the languages. However, this becomes a problem if I need to filter (i.e. I would need to filter by "English,""", "English, French"" or """, French""). I'm not sure if there's an easier way to do this, maybe add another column for other national languages? But there are some countries like South Africa that have 11 national languages - I'm interested in seeing if there is a way around this. Join two datasets with different levels
-
-Again, I struggled to use wide format data in ggplot, whereas I know the exact same graph could have been made using the long data in far less time (and also allow for more manipulation). I'm wondering what data might be better to plot in wide format...?
+Again, I struggled to use wide format data in ggplot, whereas I know the exact same graph could have been made using the long data in far less time (and also allow for more manipulation). I'm wondering what data might be better to plot in wide format...? I also wasn't sure if I was able to add multiple national languages, however after trying it out (by just using a comma to separate the languages within the ""), it worked. I can see this being a problem if I would need to filter by language though - i.e. I would need to filter by "English,""", "English, French"" or """, French""). I'm not sure if there's an easier way to do this, maybe add another column for other national languages? But there are some countries like South Africa that have 11 national languages - I'm interested in seeing if there is a way around this.
 
 #### Useful Links
 
