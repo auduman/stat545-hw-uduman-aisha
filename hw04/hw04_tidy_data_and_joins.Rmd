@@ -24,22 +24,39 @@ suppressPackageStartupMessages(library(knitr))
 
 Make a tibble with one row per year and columns for life expectancy for two or more countries. Use knitr::kable() to make this table look pretty in your rendered homework. Take advantage of this new data shape to scatterplot life expectancy for one country against that of another.
 
+For this exercise, I just thought of the first country that came to mind for each continent (note that I considered North America and South America as separate continents, but in Gapminder I know they are classified as one). The countries chosen were Canada, Bolivia, Greece, Tanzania, Indonesia and New Zealand. 
+
+Out of the Gapminder dataset, I used `filter` to select data for only the countries chosen. Next I used `select` to only retain the columns relevant to this activity, which are country, year and life expectancy. I used the `head` argument so only the first 6 rows of this otherwise very long dataframe would be displayed: 
+
+
 
 ```{r}
-lifeExp_year <- gapminder %>% 
-  filter(country %in% c("Canada", "Bolivia", "Greece", "Tanzania", "Indonesia")) %>% 
-  select(country, year, lifeExp) %>% 
-  group_by(year) %>% 
-  spread(key = country, value = lifeExp)
-knitr::kable(lifeExp_year)
+lifeExp_1 <- gapminder %>% 
+  filter(country %in% c("Canada", "Bolivia", "Greece", "Tanzania", "Indonesia", "New Zealand")) %>% 
+  select(country, year, lifeExp) 
+knitr::kable(head(lifeExp_1))
 ```
 
 
+Now we have to convert this long dataframe into a wide dataframe. To reshape the data, I used `spread`, which converts a key-value pair across multiple columns (turns 'long' data into 'wide' data). This means the countries, which previously were in rows, will now be in columns with each country having an individual column. The new dataframe will automatically have one row per year as a result. 
+
+
+```{r}
+lifeExp_year <- lifeExp_1 %>% 
+  spread(key = country, value = lifeExp)
+
+knitr::kable(lifeExp_year, digits = 2, col.names = c("Year", "Canada Life Expectancy", "Bolivia Life Expectancy", "Greece Life Expectancy", "Tanzania Life Expectancy", "Indonesia Life Expectancy", "New Zealand Life Expectancy"))
+```
+
+
+I wanted to change the column names to something more informative and found that the `col.names` argument can do this for me.
 
 #### Scatterplot of life expectancy: Canada vs Indonesia 
 
 
-After forming the new dataset, I noticed right away the huge difference in life expectancies between Canada and Indonesia, especially in the 1950's-1970's. I thought this would be a good example to plot and show how life expectancies for the two countries changed over time. 
+After forming the new dataset, I noticed right away the huge difference in life expectancies between Canada and Indonesia, especially in the 1950's-1970's. I thought this would be a good example to plot and visualize how life expectancies for the two countries changed over time.
+
+**Attempt #1** 
 
 
 ```{r}
@@ -49,33 +66,29 @@ lifeExp_year %>%
          geom_point()
 ```
 
-trying to plot 2 y axis: attempt #1 
+This didn't work, it only plotted Canada and not Indonesia. 
+
+
+**Attempt #2** 
+
 
 ```{r}
 ggplot(lifeExp_year, aes(year)) + 
   geom_point(aes(y = Canada, colour ="Canada")) + 
   geom_point(aes(y = Indonesia, colour="Indonesia")) + 
-  labs(x = "Year", y = "Life Expectancy")
+  scale_colour_discrete(name = "Country") +
+  theme_bw() + 
+  theme(axis.title = element_text(size=14, face="bold"),
+        plot.title = element_text(size=15, face="bold", hjust=0.48),
+        axis.title.x = element_text(size=13),
+        axis.title.y = element_text(size=13)) + 
+  labs(x = "Year", y = "Life Expectancy (years)", title = "Comparison of Canada and Indonesia Life Expectancies")
 ```
 
 
-This plot took me a really long time - it is not like the simpler ggplots we have done before using life expectancy, as now we have to use the columns for the countries (Canada, Indonesia) and not just the general life expectancy column and select for Canada and Indonesia.
+This plot took me a really long time - it is not like the simpler ggplots we have done before using life expectancy, as now we have to use the columns for the countries (Canada, Indonesia) and not just the general life expectancy column and select for Canada and Indonesia. Realistically it makes more sense to me to use the long form of the data like we have been using so far in this class, at least in ggplot. That being said, I tried to use the data from the dataframe I had just made, as I thought this was the point of the exercise. I finally was able to do so after much trial-and-error!
 
 However, I think the graph shows the information pretty well: Canada has always had a relatively high life expectancy, and it has been slowly increasing with time. Indonesia, on the other hand, had a very low life expectancy of 37.5 years in 1952, but we have seen the life expectancy rise at a faster rate over time. 
-
-
-(this is not correct)
-```{r}
-lifeExp_CI <- gapminder %>% 
-    filter(country %in% c("Canada", "Indonesia")) %>% 
-  select(country, year, lifeExp)
-
-lifeExp_CI
-
-p1 <- ggplot(lifeExp_CI, aes(year, lifeExp, colour=country))
-p1
-  
-```
 
 
 
@@ -84,14 +97,12 @@ p1
 
 
 
-#### Activity 1 
+### Activity 1 
 
 
 Create a second data frame, complementary to Gapminder. Join this with (part of) Gapminder using a dplyr join function and make some observations about the process and result. Explore the different types of joins. Examples of a second data frame you could build:
 
-One row per country, a country variable and one or more variables with extra info, such as language spoken, NATO membership, national animal, or capitol city. If you really want to be helpful, you could attempt to make a pull request to resolve this issue, where I would like to bring ISO country codes into the gapminder package.
-
-
+One row per country, a country variable and one or more variables with extra info, such as language spoken, NATO membership, national animal, or capitol city.
 
 ```{r}
 country <- c("Bangladesh","Canada","Guatemala","India","Papua New Guinea","Romania","Russia","Qatar","Somalia")
@@ -109,20 +120,16 @@ gapminder_2 <- gapminder %>%
 knitr::kable(head(gapminder_2))
 ```
 
- filter(country %in% c("Canada", "Bolivia", "Greece", "Tanzania", "Indonesia")) %>% 
-  select(country, year, lifeExp) %>% 
-  group_by(year) %>% 
 
 
+#### Left join 
 
-### Left join 
-
-The left join takes only the countries in the data from the first dataset (activity_1) and uses the gapminder dataset to complete the information for the missing columns (e.g. pop, continent). If Gapminder does not have information for a country that is within the first dataframe, then it will populate that cell with 'NA'. 
+The left join takes only the countries in the data from the first dataset (activity_1) and uses the gapminder_2 dataset to complete the information for the missing columns (e.g. mean GDP per capita, mean life expectancy). If Gapminder does not have information for a country that is within the first dataframe, then it will populate that cell with 'NA'. 
 
 
 ```{r}
-leftjoin <- left_join(activity_1, gapminder, by="country")
-leftjoin
+leftjoin <- left_join(activity_1, gapminder_2, by="country")
+knitr::kable(leftjoin)
 ```
 
 
@@ -130,19 +137,53 @@ We can see that the rows for Papua New Guinea, Russia and Qatar all have NA's, i
 
 
 
-### Inner join 
+#### Inner join 
 
 Inner join takes everything that is in common for both datasets (countries I chose + the countries available in Gapminder) and removes what isn't common. 
 
 
 ```{r}
-innerjoin <- inner_join(activity_1, gapminder, by="country")
-innerjoin
+innerjoin <- inner_join(activity_1, gapminder_2, by="country")
+knitr::kable(innerjoin)
 ```
 
 
 The Gapminder dataset does not have data for the countries Papua New Guinea, Russia or Qatar. This is why there are 3 less rows than the `left_join` output (72 rows versus 75).
 
+
+#### Semi join
+
+This will return all rows from activity_1 where there are matching values in the Gapminder dataset, and keeps just the columns from activity_1 dataset. 
+
+```{r}
+semijoin <- semi_join(activity_1, gapminder_2, by="country")
+knitr::kable(semijoin)
+```
+
+
+#### Anti join 
+
+This returns all rows from the gapminder dataset where there are NOT matching values in the activity_1 dataset, and it keeps just the columns from activity_1. 
+
+```{r}
+antijoin <- anti_join(activity_1, gapminder_2, by="country")
+knitr::kable(antijoin)
+```
+
+I guess this can be useful for when you have massive datasets and you need to know what values (in this case countries) are not common. 
+
+
+#### Full join 
+
+This will return all rows and all columns from both the activity_1 dataset and the gapminder_2 dataset. 
+
+
+```{r}
+fulljoin <- full_join(activity_1, gapminder_2, by="country")
+knitr::kable(fulljoin)
+```
+
+We can see that the values for the three countries not included in the gapminder dataset have 'NA' values as they cannot be populated by this dataset. 
 
 
 #### One row per continent, a continent variable and one or more variables with extra info, such as northern versus southern hemisphere.
@@ -179,13 +220,19 @@ knitr::kable(innerjoin2)
 
 
 
+
+## Reporting my process 
+
 How do I add 2 national languages to certain countries? YES - put it inside the parentheses for the languages. However, this becomes a problem if I need to filter (i.e. I would need to filter by "English,""", "English, French"" or """, French""). I'm not sure if there's an easier way to do this, maybe add another column for other national languages? But there are some countries like South Africa that have 11 national languages - I'm interested in seeing if there is a way around this. 
 Join two datasets with different levels
 
 
+Again, I struggled to use wide format data in ggplot, whereas I know the exact same graph could have been made using the long data in far less time (and also allow for more manipulation). I'm wondering what data might be better to plot in wide format...? 
 
-## Reporting my process 
+#### Useful Links 
 
-Spread function: https://stackoverflow.com/questions/26221752/how-spread-in-tidyr-handles-factor-levels
+- [Spread function](https://www.rdocumentation.org/packages/tidyr/versions/0.7.1/topics/spread) and how it handles [factor levels](https://stackoverflow.com/questions/26221752/how-spread-in-tidyr-handles-factor-levels)
 
-Getting my left join to work took a while at first. 
+- [Tidy data](http://r4ds.had.co.nz/tidy-data.html) 
+
+- [Data wrangling cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) though I have to admit 95% of this stuff is still way over my head!
