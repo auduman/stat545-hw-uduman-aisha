@@ -1,0 +1,191 @@
+---
+title: "hm04_tidy_data_and_joins"
+author: "Aisha Uduman"
+date: "October 7, 2017"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(gapminder))
+suppressPackageStartupMessages(library(knitr))
+```
+
+
+
+## General Data Reshaping and Relationship to Aggregation 
+
+
+#### Activity #2 
+
+Make a tibble with one row per year and columns for life expectancy for two or more countries. Use knitr::kable() to make this table look pretty in your rendered homework. Take advantage of this new data shape to scatterplot life expectancy for one country against that of another.
+
+
+```{r}
+lifeExp_year <- gapminder %>% 
+  filter(country %in% c("Canada", "Bolivia", "Greece", "Tanzania", "Indonesia")) %>% 
+  select(country, year, lifeExp) %>% 
+  group_by(year) %>% 
+  spread(key = country, value = lifeExp)
+knitr::kable(lifeExp_year)
+```
+
+
+
+#### Scatterplot of life expectancy: Canada vs Indonesia 
+
+
+After forming the new dataset, I noticed right away the huge difference in life expectancies between Canada and Indonesia, especially in the 1950's-1970's. I thought this would be a good example to plot and show how life expectancies for the two countries changed over time. 
+
+
+```{r}
+lifeExp_year %>% 
+  select(year, Canada, Indonesia) %>% 
+  ggplot(aes(x = year, y = c(Canada))) +
+         geom_point()
+```
+
+trying to plot 2 y axis: attempt #1 
+
+```{r}
+ggplot(lifeExp_year, aes(year)) + 
+  geom_point(aes(y = Canada, colour ="Canada")) + 
+  geom_point(aes(y = Indonesia, colour="Indonesia")) + 
+  labs(x = "Year", y = "Life Expectancy")
+```
+
+
+This plot took me a really long time - it is not like the simpler ggplots we have done before using life expectancy, as now we have to use the columns for the countries (Canada, Indonesia) and not just the general life expectancy column and select for Canada and Indonesia.
+
+However, I think the graph shows the information pretty well: Canada has always had a relatively high life expectancy, and it has been slowly increasing with time. Indonesia, on the other hand, had a very low life expectancy of 37.5 years in 1952, but we have seen the life expectancy rise at a faster rate over time. 
+
+
+(this is not correct)
+```{r}
+lifeExp_CI <- gapminder %>% 
+    filter(country %in% c("Canada", "Indonesia")) %>% 
+  select(country, year, lifeExp)
+
+lifeExp_CI
+
+p1 <- ggplot(lifeExp_CI, aes(year, lifeExp, colour=country))
+p1
+  
+```
+
+
+
+
+## Join, merge, look up 
+
+
+
+#### Activity 1 
+
+
+Create a second data frame, complementary to Gapminder. Join this with (part of) Gapminder using a dplyr join function and make some observations about the process and result. Explore the different types of joins. Examples of a second data frame you could build:
+
+One row per country, a country variable and one or more variables with extra info, such as language spoken, NATO membership, national animal, or capitol city. If you really want to be helpful, you could attempt to make a pull request to resolve this issue, where I would like to bring ISO country codes into the gapminder package.
+
+
+
+```{r}
+country <- c("Bangladesh","Canada","Guatemala","India","Papua New Guinea","Romania","Russia","Qatar","Somalia")
+nat_animal <- c("Bengal Tiger","Beaver","Quetzal","King Cobra","Dugong","Lynx","Eurasian Brown Bear","Arabian Oryx","Leopard")
+nat_language <- c("Bengali", "English, French", "Spanish", "Hindi", "Hiri Motu", "Romanian", "Russian", "Arabic", "Somali") 
+activity_1 <- data.frame(country, nat_animal, nat_language)
+knitr::kable(activity_1)
+```
+
+```{r}
+gapminder_2 <- gapminder %>% 
+  filter(country %in% c("Bangladesh", "Canada", "Guatemala", "India", "Papua New Guinea", "Romania", "Russia", "Qatar", "Somalia")) %>% 
+  group_by(country) %>% 
+  summarize(mean_gdpPercap = mean(gdpPercap), mean_lifeExp = mean(lifeExp))
+knitr::kable(head(gapminder_2))
+```
+
+ filter(country %in% c("Canada", "Bolivia", "Greece", "Tanzania", "Indonesia")) %>% 
+  select(country, year, lifeExp) %>% 
+  group_by(year) %>% 
+
+
+
+### Left join 
+
+The left join takes only the countries in the data from the first dataset (activity_1) and uses the gapminder dataset to complete the information for the missing columns (e.g. pop, continent). If Gapminder does not have information for a country that is within the first dataframe, then it will populate that cell with 'NA'. 
+
+
+```{r}
+leftjoin <- left_join(activity_1, gapminder, by="country")
+leftjoin
+```
+
+
+We can see that the rows for Papua New Guinea, Russia and Qatar all have NA's, implying that Gapminder does not contain data for those countries. 
+
+
+
+### Inner join 
+
+Inner join takes everything that is in common for both datasets (countries I chose + the countries available in Gapminder) and removes what isn't common. 
+
+
+```{r}
+innerjoin <- inner_join(activity_1, gapminder, by="country")
+innerjoin
+```
+
+
+The Gapminder dataset does not have data for the countries Papua New Guinea, Russia or Qatar. This is why there are 3 less rows than the `left_join` output (72 rows versus 75).
+
+
+
+#### One row per continent, a continent variable and one or more variables with extra info, such as northern versus southern hemisphere.
+
+
+I decided to use the variable population, and created a dataframe with one row per continent and their average population in the year 2007. 
+
+
+```{r}
+pop2007 <- gapminder %>% 
+  filter(year==2007) %>% 
+  group_by(continent) %>% 
+  summarise(Average_Population=mean(pop))
+pop2007
+```
+
+I then had to make a dataframe for continent variables (west or east of Atlantic Ocean) - this is kind of silly in my opinion but I couldn't think of many suitable continent-wide variables where continents weren't cut off in some places. 
+
+
+```{r}
+atlantic_ocean <- c("East", "West", "East", "West", "West")
+continent <- c("Africa", "Americas", "Asia", "Europe", "Oceania")
+
+ocean <- data.frame(continent, atlantic_ocean)
+knitr::kable(ocean)
+```
+
+Now we join this new dataframe with the continent variable  with the gapminder dataset we made before summarizing continent by average population in the year of 2007: 
+
+```{r}
+innerjoin2 <- inner_join(pop2007, ocean, by="continent")
+knitr::kable(innerjoin2)
+```
+
+
+
+How do I add 2 national languages to certain countries? YES - put it inside the parentheses for the languages. However, this becomes a problem if I need to filter (i.e. I would need to filter by "English,""", "English, French"" or """, French""). I'm not sure if there's an easier way to do this, maybe add another column for other national languages? But there are some countries like South Africa that have 11 national languages - I'm interested in seeing if there is a way around this. 
+Join two datasets with different levels
+
+
+
+## Reporting my process 
+
+Spread function: https://stackoverflow.com/questions/26221752/how-spread-in-tidyr-handles-factor-levels
+
+Getting my left join to work took a while at first. 

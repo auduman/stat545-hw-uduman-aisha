@@ -1,0 +1,14 @@
+---
+title: "README"
+author: "Aisha Uduman"
+date: "10/9/2017"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+**Click [here](https://github.com/auduman/stat545-hw-uduman-aisha) to go back my main homework page.** 
+
+Click [here]() to see my R Markdown file for hw04. 
+
+Click [here]() to see the .md file for hw04 (which displays the function outputs).
