@@ -99,17 +99,20 @@ fct_reorder(gap_noocean_drop$country, gap_noocean_drop$gdpPercap, min, .desc = T
 
 
 Reordering continents based on descending variance in GDP per capita
+
 ```{r}
 fct_reorder(gap_noocean_drop$continent, gap_noocean_drop$gdpPercap, var, .desc = TRUE) %>% 
   levels()
 ```
 
-For a more focussed example, let's look at the variable life expectancy, focusing on the countries with the lowest life expectancies. 
+
+For a more focussed example, let's look at the variable life expectancy, focusing on the countries with the lowest life expectancies. I used `head`() to identify the 6 countries with lowest life expectancies.
 
 ```{r}
 country_reorder_lifeExp <- fct_reorder(gap_noocean_drop$country, gap_noocean_drop$lifeExp, min, .desc = FALSE) %>% 
   levels() %>% 
   head()
+
 
 head(country_reorder_lifeExp)
 ```
@@ -143,7 +146,8 @@ Cool, now we can see the output of our reordered factors selecting for minimum l
 # Common Part 
 
 Characterize the derived data before and after your factor re-leveling. 
-Exploring effects of reordering a factor and factor reordering coupled with `arrange()`.
+
+**Exploring effects of reordering a factor and factor reordering coupled with `arrange()`.**
 
 
 To see how our countries are organized (most likely alphebetically): 
@@ -153,9 +157,14 @@ To see how our countries are organized (most likely alphebetically):
 min_lifeExp %>% 
   group_by(country)
 
-kable(min_lifeExp, digits=2)
 ```
 
+
+To view only the first 15 rows of this very long dataset, I used the `head()` function: 
+
+```{r}
+head(min_lifeExp, 15)
+```
 
 
 Yes, the countries are arranged alphabetically. I want them to be displayed in terms of minimum life expectancy, so the dataframe must be re-arranged to display life expectancy levels in ascending order. *This is a note to myself, if I wanted to arrange by descending order I would use `arrange(desc(lifeExp))`, as `arrange()` automatically uses ascending order. 
@@ -165,12 +174,19 @@ Yes, the countries are arranged alphabetically. I want them to be displayed in t
 ascending_lifeExp <- min_lifeExp %>% 
   group_by(country) %>% 
   arrange(lifeExp)
-kable(ascending_lifeExp, digits =2)
+```
+
+To view only the first 15 rows of this also very long dataset, I used the `head()` function: 
+
+```{r}
+head(ascending_lifeExp, 15) %>% 
+kable()
 ```
 
 
-This is what I wanted, now we can see our dataframe is sorted in terms of increasing life expectancy, and not country or year. I want to see if this has any effect on a figure: 
+This is what I wanted, now we can see our dataframe is sorted in terms of increasing life expectancy, and not country or year. I want to see if coupling the factor reordering with `arrange()` has any effect on a figure: 
 
+With `arrange()`: 
 
 ```{r}
 ggplot(ascending_lifeExp, aes(year, lifeExp, colour=country)) + 
@@ -179,6 +195,18 @@ ggplot(ascending_lifeExp, aes(year, lifeExp, colour=country)) +
   scale_color_brewer(palette="Accent") + 
   labs(x = "Year", y = "Life Expectancy", title = "Countries with Minimum Life Expectancies") + theme_bw()
 ```
+
+Without `arrange(): 
+
+```{r}
+plot_minlifeExp <- ggplot(min_lifeExp, aes(year, lifeExp, colour=country)) + 
+  facet_wrap(~country) + 
+  geom_line() + 
+  scale_color_brewer(palette="Accent") + 
+  labs(x = "Year", y = "Life Expectancy", title = "Countries with Minimum Life Expectancies") + theme_bw()
+plot_minlifeExp
+```
+
 
 No, unless I'm doing it wrong...the visualizations are exactly the same! Even the countries in the legend are still in alphabetical order. I played around with this for a long time and found that nothing I did with `arrange()` made a change in the resulting plot. 
 
@@ -190,6 +218,7 @@ No, unless I'm doing it wrong...the visualizations are exactly the same! Even th
 
 
 # File I/O 
+
 
 Writing and reading to file 
 

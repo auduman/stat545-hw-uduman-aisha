@@ -292,12 +292,13 @@ fct_reorder(gap_noocean_drop$continent, gap_noocean_drop$gdpPercap, var, .desc =
 
     ## [1] "Asia"     "Europe"   "Americas" "Africa"
 
-For a more focussed example, let's look at the variable life expectancy, focusing on the countries with the lowest life expectancies.
+For a more focussed example, let's look at the variable life expectancy, focusing on the countries with the lowest life expectancies. I used `head`() to identify the 6 countries with lowest life expectancies.
 
 ``` r
 country_reorder_lifeExp <- fct_reorder(gap_noocean_drop$country, gap_noocean_drop$lifeExp, min, .desc = FALSE) %>% 
   levels() %>% 
   head()
+
 
 head(country_reorder_lifeExp)
 ```
@@ -333,7 +334,9 @@ Cool, now we can see the output of our reordered factors selecting for minimum l
 Common Part
 ===========
 
-Characterize the derived data before and after your factor re-leveling. Exploring effects of reordering a factor and factor reordering coupled with `arrange()`.
+Characterize the derived data before and after your factor re-leveling.
+
+**Exploring effects of reordering a factor and factor reordering coupled with `arrange()`.**
 
 To see how our countries are organized (most likely alphebetically):
 
@@ -358,84 +361,30 @@ min_lifeExp %>%
     ## 10  1997 Afghanistan  41.763
     ## # ... with 62 more rows
 
+To view only the first 15 rows of this very long dataset, I used the `head()` function:
+
 ``` r
-kable(min_lifeExp, digits=2)
+head(min_lifeExp, 15)
 ```
 
-|  year| country      |  lifeExp|
-|-----:|:-------------|--------:|
-|  1952| Afghanistan  |    28.80|
-|  1957| Afghanistan  |    30.33|
-|  1962| Afghanistan  |    32.00|
-|  1967| Afghanistan  |    34.02|
-|  1972| Afghanistan  |    36.09|
-|  1977| Afghanistan  |    38.44|
-|  1982| Afghanistan  |    39.85|
-|  1987| Afghanistan  |    40.82|
-|  1992| Afghanistan  |    41.67|
-|  1997| Afghanistan  |    41.76|
-|  2002| Afghanistan  |    42.13|
-|  2007| Afghanistan  |    43.83|
-|  1952| Angola       |    30.02|
-|  1957| Angola       |    32.00|
-|  1962| Angola       |    34.00|
-|  1967| Angola       |    35.98|
-|  1972| Angola       |    37.93|
-|  1977| Angola       |    39.48|
-|  1982| Angola       |    39.94|
-|  1987| Angola       |    39.91|
-|  1992| Angola       |    40.65|
-|  1997| Angola       |    40.96|
-|  2002| Angola       |    41.00|
-|  2007| Angola       |    42.73|
-|  1952| Cambodia     |    39.42|
-|  1957| Cambodia     |    41.37|
-|  1962| Cambodia     |    43.41|
-|  1967| Cambodia     |    45.41|
-|  1972| Cambodia     |    40.32|
-|  1977| Cambodia     |    31.22|
-|  1982| Cambodia     |    50.96|
-|  1987| Cambodia     |    53.91|
-|  1992| Cambodia     |    55.80|
-|  1997| Cambodia     |    56.53|
-|  2002| Cambodia     |    56.75|
-|  2007| Cambodia     |    59.72|
-|  1952| Gambia       |    30.00|
-|  1957| Gambia       |    32.06|
-|  1962| Gambia       |    33.90|
-|  1967| Gambia       |    35.86|
-|  1972| Gambia       |    38.31|
-|  1977| Gambia       |    41.84|
-|  1982| Gambia       |    45.58|
-|  1987| Gambia       |    49.27|
-|  1992| Gambia       |    52.64|
-|  1997| Gambia       |    55.86|
-|  2002| Gambia       |    58.04|
-|  2007| Gambia       |    59.45|
-|  1952| Rwanda       |    40.00|
-|  1957| Rwanda       |    41.50|
-|  1962| Rwanda       |    43.00|
-|  1967| Rwanda       |    44.10|
-|  1972| Rwanda       |    44.60|
-|  1977| Rwanda       |    45.00|
-|  1982| Rwanda       |    46.22|
-|  1987| Rwanda       |    44.02|
-|  1992| Rwanda       |    23.60|
-|  1997| Rwanda       |    36.09|
-|  2002| Rwanda       |    43.41|
-|  2007| Rwanda       |    46.24|
-|  1952| Sierra Leone |    30.33|
-|  1957| Sierra Leone |    31.57|
-|  1962| Sierra Leone |    32.77|
-|  1967| Sierra Leone |    34.11|
-|  1972| Sierra Leone |    35.40|
-|  1977| Sierra Leone |    36.79|
-|  1982| Sierra Leone |    38.45|
-|  1987| Sierra Leone |    40.01|
-|  1992| Sierra Leone |    38.33|
-|  1997| Sierra Leone |    39.90|
-|  2002| Sierra Leone |    41.01|
-|  2007| Sierra Leone |    42.57|
+    ## # A tibble: 15 x 3
+    ##     year     country lifeExp
+    ##    <int>      <fctr>   <dbl>
+    ##  1  1952 Afghanistan  28.801
+    ##  2  1957 Afghanistan  30.332
+    ##  3  1962 Afghanistan  31.997
+    ##  4  1967 Afghanistan  34.020
+    ##  5  1972 Afghanistan  36.088
+    ##  6  1977 Afghanistan  38.438
+    ##  7  1982 Afghanistan  39.854
+    ##  8  1987 Afghanistan  40.822
+    ##  9  1992 Afghanistan  41.674
+    ## 10  1997 Afghanistan  41.763
+    ## 11  2002 Afghanistan  42.129
+    ## 12  2007 Afghanistan  43.828
+    ## 13  1952      Angola  30.015
+    ## 14  1957      Angola  31.999
+    ## 15  1962      Angola  34.000
 
 Yes, the countries are arranged alphabetically. I want them to be displayed in terms of minimum life expectancy, so the dataframe must be re-arranged to display life expectancy levels in ascending order. \*This is a note to myself, if I wanted to arrange by descending order I would use `arrange(desc(lifeExp))`, as `arrange()` automatically uses ascending order.
 
@@ -443,85 +392,36 @@ Yes, the countries are arranged alphabetically. I want them to be displayed in t
 ascending_lifeExp <- min_lifeExp %>% 
   group_by(country) %>% 
   arrange(lifeExp)
-kable(ascending_lifeExp, digits =2)
+```
+
+To view only the first 15 rows of this also very long dataset, I used the `head()` function:
+
+``` r
+head(ascending_lifeExp, 15) %>% 
+kable()
 ```
 
 |  year| country      |  lifeExp|
 |-----:|:-------------|--------:|
-|  1992| Rwanda       |    23.60|
-|  1952| Afghanistan  |    28.80|
-|  1952| Gambia       |    30.00|
-|  1952| Angola       |    30.02|
-|  1952| Sierra Leone |    30.33|
-|  1957| Afghanistan  |    30.33|
-|  1977| Cambodia     |    31.22|
-|  1957| Sierra Leone |    31.57|
-|  1962| Afghanistan  |    32.00|
-|  1957| Angola       |    32.00|
-|  1957| Gambia       |    32.06|
-|  1962| Sierra Leone |    32.77|
-|  1962| Gambia       |    33.90|
-|  1962| Angola       |    34.00|
-|  1967| Afghanistan  |    34.02|
-|  1967| Sierra Leone |    34.11|
-|  1972| Sierra Leone |    35.40|
-|  1967| Gambia       |    35.86|
-|  1967| Angola       |    35.98|
-|  1997| Rwanda       |    36.09|
-|  1972| Afghanistan  |    36.09|
-|  1977| Sierra Leone |    36.79|
-|  1972| Angola       |    37.93|
-|  1972| Gambia       |    38.31|
-|  1992| Sierra Leone |    38.33|
-|  1977| Afghanistan  |    38.44|
-|  1982| Sierra Leone |    38.45|
-|  1952| Cambodia     |    39.42|
-|  1977| Angola       |    39.48|
-|  1982| Afghanistan  |    39.85|
-|  1997| Sierra Leone |    39.90|
-|  1987| Angola       |    39.91|
-|  1982| Angola       |    39.94|
-|  1952| Rwanda       |    40.00|
-|  1987| Sierra Leone |    40.01|
-|  1972| Cambodia     |    40.32|
-|  1992| Angola       |    40.65|
-|  1987| Afghanistan  |    40.82|
-|  1997| Angola       |    40.96|
-|  2002| Angola       |    41.00|
-|  2002| Sierra Leone |    41.01|
-|  1957| Cambodia     |    41.37|
-|  1957| Rwanda       |    41.50|
-|  1992| Afghanistan  |    41.67|
-|  1997| Afghanistan  |    41.76|
-|  1977| Gambia       |    41.84|
-|  2002| Afghanistan  |    42.13|
-|  2007| Sierra Leone |    42.57|
-|  2007| Angola       |    42.73|
-|  1962| Rwanda       |    43.00|
-|  2002| Rwanda       |    43.41|
-|  1962| Cambodia     |    43.41|
-|  2007| Afghanistan  |    43.83|
-|  1987| Rwanda       |    44.02|
-|  1967| Rwanda       |    44.10|
-|  1972| Rwanda       |    44.60|
-|  1977| Rwanda       |    45.00|
-|  1967| Cambodia     |    45.41|
-|  1982| Gambia       |    45.58|
-|  1982| Rwanda       |    46.22|
-|  2007| Rwanda       |    46.24|
-|  1987| Gambia       |    49.27|
-|  1982| Cambodia     |    50.96|
-|  1992| Gambia       |    52.64|
-|  1987| Cambodia     |    53.91|
-|  1992| Cambodia     |    55.80|
-|  1997| Gambia       |    55.86|
-|  1997| Cambodia     |    56.53|
-|  2002| Cambodia     |    56.75|
-|  2002| Gambia       |    58.04|
-|  2007| Gambia       |    59.45|
-|  2007| Cambodia     |    59.72|
+|  1992| Rwanda       |   23.599|
+|  1952| Afghanistan  |   28.801|
+|  1952| Gambia       |   30.000|
+|  1952| Angola       |   30.015|
+|  1952| Sierra Leone |   30.331|
+|  1957| Afghanistan  |   30.332|
+|  1977| Cambodia     |   31.220|
+|  1957| Sierra Leone |   31.570|
+|  1962| Afghanistan  |   31.997|
+|  1957| Angola       |   31.999|
+|  1957| Gambia       |   32.065|
+|  1962| Sierra Leone |   32.767|
+|  1962| Gambia       |   33.896|
+|  1962| Angola       |   34.000|
+|  1967| Afghanistan  |   34.020|
 
-This is what I wanted, now we can see our dataframe is sorted in terms of increasing life expectancy, and not country or year. I want to see if this has any effect on a figure:
+This is what I wanted, now we can see our dataframe is sorted in terms of increasing life expectancy, and not country or year. I want to see if coupling the factor reordering with `arrange()` has any effect on a figure:
+
+With `arrange()`:
 
 ``` r
 ggplot(ascending_lifeExp, aes(year, lifeExp, colour=country)) + 
@@ -531,7 +431,20 @@ ggplot(ascending_lifeExp, aes(year, lifeExp, colour=country)) +
   labs(x = "Year", y = "Life Expectancy", title = "Countries with Minimum Life Expectancies") + theme_bw()
 ```
 
-![](hw05_fctr_fig_mgmt_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-14-1.png)
+![](hw05_fctr_fig_mgmt_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-16-1.png)
+
+Without \`arrange():
+
+``` r
+plot_minlifeExp <- ggplot(min_lifeExp, aes(year, lifeExp, colour=country)) + 
+  facet_wrap(~country) + 
+  geom_line() + 
+  scale_color_brewer(palette="Accent") + 
+  labs(x = "Year", y = "Life Expectancy", title = "Countries with Minimum Life Expectancies") + theme_bw()
+plot_minlifeExp
+```
+
+![](hw05_fctr_fig_mgmt_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-17-1.png)
 
 No, unless I'm doing it wrong...the visualizations are exactly the same! Even the countries in the legend are still in alphabetical order. I played around with this for a long time and found that nothing I did with `arrange()` made a change in the resulting plot.
 
