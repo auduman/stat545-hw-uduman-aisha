@@ -1,8 +1,6 @@
 ---
-title: "hw05_fctr_fig_mgmt"
-author: "Aisha Uduman"
-date: "10/17/2017"
-output: html_document
+output: 
+  github_document
 ---
 
 ```{r setup, include=FALSE}
