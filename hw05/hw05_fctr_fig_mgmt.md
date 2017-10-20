@@ -533,9 +533,7 @@ ggplot(ascending_lifeExp, aes(year, lifeExp, colour=country)) +
 
 ![](hw05_fctr_fig_mgmt_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-14-1.png)
 
-No, unless I'm doing it wrong...the visualizations are exactly the same! Even the countries in the legend are still in alphabetical order.
-
-FIX THIS, TRY TO MAKE ARRANGE SHOW ON A PLOT.
+No, unless I'm doing it wrong...the visualizations are exactly the same! Even the countries in the legend are still in alphabetical order. I played around with this for a long time and found that nothing I did with `arrange()` made a change in the resulting plot.
 
 Visualization design
 ====================
@@ -545,7 +543,7 @@ File I/O
 
 Writing and reading to file
 
-Writing:
+**Writing:**
 
 ``` r
 write.csv(ascending_lifeExp, file = "ascending_lifeExp.csv")
@@ -553,7 +551,9 @@ write.csv(ascending_lifeExp, file = "ascending_lifeExp.csv")
 
 I can see that the .csv file shows up in the homework 5 folder.
 
-Calling:
+**Reading:**
+
+Now to read the .csv file I just wrote, I will use the `read_csv` function:
 
 ``` r
 read_csv_asc <- read_csv("ascending_lifeExp.csv")
@@ -659,7 +659,7 @@ Using `ggsave`, I will save a plot made earlier in this homework:
 ggsave("MinLifeExpPlot.pdf", plot_minlifeExp, width = 8, height = 6)
 ```
 
-After running, I noticed the .pdf immediately appearing in my homework 5 folder, found here: \*\*\*\* ADD LINK ADD LINK ADD LINK
+I played around a bit with figure height and width. After running, I noticed the .pdf immediately appearing in my homework 5 folder, found ![here](https://github.com/auduman/stat545-hw-uduman-aisha/blob/master/hw05/MinLifeExpPlot.pdf)
 
 Reporting my Progress
 =====================
