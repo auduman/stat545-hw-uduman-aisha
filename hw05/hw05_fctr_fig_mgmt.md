@@ -123,7 +123,7 @@ levels(gap_noocean_drop$continent)
 
     ## [1] "Africa"   "Americas" "Asia"     "Europe"
 
-Great, Oceania no longer exists in this new dataframe.
+Great, Oceania no longer exists in this new dataframe!
 
 **Reorder the levels of `country` or `continent`**
 
@@ -205,85 +205,7 @@ fct_reorder(gap_noocean_drop$country, gap_noocean_drop$lifeExp) %>%
     ## [137] "Switzerland"              "Sweden"                  
     ## [139] "Japan"                    "Iceland"
 
-Reordering countries based on descending minimum GDP per capita:
-
-``` r
-fct_reorder(gap_noocean_drop$country, gap_noocean_drop$gdpPercap, min, .desc = TRUE) %>% 
-  levels()
-```
-
-    ##   [1] "Kuwait"                   "Switzerland"             
-    ##   [3] "United States"            "Canada"                  
-    ##   [5] "Norway"                   "United Kingdom"          
-    ##   [7] "Bahrain"                  "Denmark"                 
-    ##   [9] "Netherlands"              "Sweden"                  
-    ##  [11] "Belgium"                  "Venezuela"               
-    ##  [13] "Iceland"                  "Germany"                 
-    ##  [15] "France"                   "Czech Republic"          
-    ##  [17] "Saudi Arabia"             "Finland"                 
-    ##  [19] "Austria"                  "Argentina"               
-    ##  [21] "Uruguay"                  "Hungary"                 
-    ##  [23] "Ireland"                  "Cuba"                    
-    ##  [25] "Slovak Republic"          "Italy"                   
-    ##  [27] "Lebanon"                  "South Africa"            
-    ##  [29] "Gabon"                    "Slovenia"                
-    ##  [31] "Israel"                   "Poland"                  
-    ##  [33] "Chile"                    "Spain"                   
-    ##  [35] "Peru"                     "Serbia"                  
-    ##  [37] "Greece"                   "Ecuador"                 
-    ##  [39] "Mexico"                   "Japan"                   
-    ##  [41] "Romania"                  "Croatia"                 
-    ##  [43] "Puerto Rico"              "Iraq"                    
-    ##  [45] "Portugal"                 "Hong Kong, China"        
-    ##  [47] "El Salvador"              "Iran"                    
-    ##  [49] "Trinidad and Tobago"      "Jamaica"                 
-    ##  [51] "Reunion"                  "Montenegro"              
-    ##  [53] "Costa Rica"               "Panama"                  
-    ##  [55] "Algeria"                  "Bulgaria"                
-    ##  [57] "Guatemala"                "Namibia"                 
-    ##  [59] "Libya"                    "Singapore"               
-    ##  [61] "Angola"                   "Honduras"                
-    ##  [63] "Nicaragua"                "Colombia"                
-    ##  [65] "Bolivia"                  "Congo, Rep."             
-    ##  [67] "Brazil"                   "Turkey"                  
-    ##  [69] "Mauritius"                "Paraguay"                
-    ##  [71] "Djibouti"                 "Oman"                    
-    ##  [73] "Malaysia"                 "Syria"                   
-    ##  [75] "Albania"                  "Morocco"                 
-    ##  [77] "Jordan"                   "West Bank and Gaza"      
-    ##  [79] "Sudan"                    "Egypt"                   
-    ##  [81] "Dominican Republic"       "Tunisia"                 
-    ##  [83] "Cote d'Ivoire"            "Senegal"                 
-    ##  [85] "Philippines"              "Taiwan"                  
-    ##  [87] "Haiti"                    "Cameroon"                
-    ##  [89] "Swaziland"                "Korea, Dem. Rep."        
-    ##  [91] "Sri Lanka"                "Zambia"                  
-    ##  [93] "Korea, Rep."              "Nigeria"                 
-    ##  [95] "Comoros"                  "Bosnia and Herzegovina"  
-    ##  [97] "Benin"                    "Madagascar"              
-    ##  [99] "Somalia"                  "Sao Tome and Principe"   
-    ## [101] "Togo"                     "Kenya"                   
-    ## [103] "Botswana"                 "Ghana"                   
-    ## [105] "Chad"                     "Mongolia"                
-    ## [107] "Yemen, Rep."              "Thailand"                
-    ## [109] "Indonesia"                "Mauritania"              
-    ## [111] "Central African Republic" "Tanzania"                
-    ## [113] "Pakistan"                 "Afghanistan"             
-    ## [115] "Bangladesh"               "Uganda"                  
-    ## [117] "Vietnam"                  "Niger"                   
-    ## [119] "Sierra Leone"             "India"                   
-    ## [121] "Nepal"                    "Burkina Faso"            
-    ## [123] "Guinea"                   "Rwanda"                  
-    ## [125] "Gambia"                   "Mali"                    
-    ## [127] "Liberia"                  "Zimbabwe"                
-    ## [129] "China"                    "Mozambique"              
-    ## [131] "Equatorial Guinea"        "Malawi"                  
-    ## [133] "Cambodia"                 "Ethiopia"                
-    ## [135] "Burundi"                  "Myanmar"                 
-    ## [137] "Eritrea"                  "Guinea-Bissau"           
-    ## [139] "Lesotho"                  "Congo, Dem. Rep."
-
-Reordering continents based on descending variance in GDP per capita
+Reordering continents based on descending variance in GDP per capita:
 
 ``` r
 fct_reorder(gap_noocean_drop$continent, gap_noocean_drop$gdpPercap, var, .desc = TRUE) %>% 
@@ -298,7 +220,6 @@ For a more focussed example, let's look at the variable life expectancy, focusin
 country_reorder_lifeExp <- fct_reorder(gap_noocean_drop$country, gap_noocean_drop$lifeExp, min, .desc = FALSE) %>% 
   levels() %>% 
   head()
-
 
 head(country_reorder_lifeExp)
 ```
@@ -327,7 +248,7 @@ plot_minlifeExp <- ggplot(min_lifeExp, aes(year, lifeExp, colour=country)) +
 plot_minlifeExp
 ```
 
-![](hw05_fctr_fig_mgmt_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-11-1.png)
+![](hw05_fctr_fig_mgmt_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-10-1.png)
 
 Cool, now we can see the output of our reordered factors selecting for minimum life expectancy.
 
@@ -419,7 +340,23 @@ kable()
 |  1962| Angola       |   34.000|
 |  1967| Afghanistan  |   34.020|
 
-This is what I wanted, now we can see our dataframe is sorted in terms of increasing life expectancy, and not country or year. I want to see if coupling the factor reordering with `arrange()` has any effect on a figure:
+This is what I wanted, now we can see our dataframe is sorted in terms of increasing life expectancy, and not country or year. Does arranging the data have any effect on a figure?
+
+``` r
+ggplot(ascending_lifeExp, aes(year, lifeExp, colour=country)) + 
+  facet_wrap(~country) + 
+  geom_line() + 
+  scale_color_brewer(palette="Accent") + 
+  labs(x = "Year", y = "Life Expectancy", title = "Countries with Minimum Life Expectancies") + theme_bw()
+```
+
+![](hw05_fctr_fig_mgmt_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-15-1.png)
+
+It doesn't seem like this has any effect on a graph.
+
+**Exploring the effects of reordering a factor and factor reordering coupled with `arrange()`**
+
+I want to see if coupling the factor reordering with `arrange()` has any effect on a figure:
 
 With `arrange()`:
 
@@ -450,6 +387,39 @@ No, unless I'm doing it wrong...the visualizations are exactly the same! Even th
 
 Visualization design
 ====================
+
+I think it will be interesting to take one of the first plots I ever made in ggplot, which is probably hideous, and try and work on it to make it look more visually pleasing after learning a lot about visualization techniques in this class. This is an initial plot of
+
+``` r
+ggplot(gapminder, aes(year, lifeExp, colour = continent)) +
+    facet_wrap(~ continent) +
+    geom_point() + 
+  geom_smooth(method='loess', colour = "black", se=FALSE, span = 5) 
+```
+
+![](hw05_fctr_fig_mgmt_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-18-1.png)
+
+Now to make it look nicer: I adjusted the figure height and width, changed the alpha transparency to 0.4, made the line dashed. I enjoyed manually selecting colours, however I know I'm not an expert so I decided to use one of the R Colour Brewer palettes for qualitative data....to be honest I really don't like any of them, but "Set2" seemed okay.
+
+In addition, I also used `labs` and `theme` to adjust the axis title, positions, font sizes, the strip background colour and text colour, removed the legend title as I think it's pretty self-explanatory. I also used the `scales::pretty_breaks` argument to adjust the y-axis as I found ticks representing 20 years of age not to be super helpful.
+
+``` r
+ggplot(gapminder, aes(year, lifeExp, colour = continent)) +
+    facet_wrap(~ continent) +
+    geom_point(alpha=0.4) + 
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 7)) + 
+  geom_smooth(method='loess', colour = "black", se=FALSE, span = 5, linetype = "dashed") +
+  labs(x = "Year", y = "Life Expectancy", title = "Life Expectancy of Continents over Time") + 
+  scale_color_brewer(palette = "Set2") + 
+  theme_bw() +
+    theme(strip.background = element_rect(fill="royalblue4"), 
+          strip.text = element_text(size=12, face="bold", colour = "white"), 
+          plot.title = element_text(size=14,face="bold", hjust = 0.5),
+          axis.title = element_text(size=12, face="bold"), 
+          legend.title = element_blank())
+```
+
+![](hw05_fctr_fig_mgmt_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-19-1.png)
 
 File I/O
 ========
@@ -577,10 +547,22 @@ I played around a bit with figure height and width. After running, I noticed the
 Reporting my Progress
 =====================
 
+I found this week's homework to take quite a bit of time - I was also rushed due to my TA commitments and a trip I had to take on the weekend. The actual work took quite a long time so I wasn't able to spend as much time as I would have liked on the aesthetics of the output.
+
+\*\*Some issues I encountered:\*
+
 -   I spent too long trying to make sure I only selected a few of the countries with lowest expectancy, and realised instead of using `head()` to view them and then manually select them like I've been doing before, I can just pipe `head()` after the `levels()` argument to only retain the first 6 levels that I want to visualize.
 
 -   I had issues figuring out how to enter my pathway to save my csv files....using the `file=""` I realised it saves automatically to the folder that this markdown file is in (so my homework 5 folder), but what if I wanted to save it somewhere else? I kept getting error messages, so need to look into that later.
 
+-   I would like to learn how to display two plots side by side (i.e. if I could show the plots of factor reordering and factor reordering + `arrange()`) it would look much better and also be easier to notice any differences. I noticed Vincenzo posted [this](http://stat545.com/block020_multiple-plots-on-a-page.html) link, however I ran out of time to try it.
+
 **Useful Links**
 
 -   Helpful information on [`arrange()`](https://www.r-bloggers.com/dplyr-example-1/)
+
+-   A useful forum on using `scales::pretty_breaks(n=)` to change the number of [axis ticks.](https://stackoverflow.com/questions/11335836/increase-number-of-axis-ticks)
+
+-   [ggplot2](http://sape.inf.usi.ch/quick-reference/ggplot2/colour) quick reference for colour and fill.
+
+-   Notes from STAT 545 class on ['being the boss of your factors'](http://stat545.com/block029_factors.html) were super useful to keep wrapping my head around these concepts.
