@@ -491,7 +491,7 @@ ggsave("my_plot.pdf", p)
 
     ## Saving 7 x 5 in image
 
-I can see that this created another plot in my homework 5 folder, which can be found here. To be honest, I can't think of when this actually matters compared to the previous `ggsave` function I ran before. I have to read up about this more.
+I can see that this created another plot in my homework 5 folder, which can be found ![here](https://github.com/auduman/stat545-hw-uduman-aisha/blob/master/hw05/object_p.pdf). To be honest, I can't think of when this actually matters compared to the previous `ggsave` function I ran before. I have to read up about this more.
 
 Reporting my Progress
 =====================
