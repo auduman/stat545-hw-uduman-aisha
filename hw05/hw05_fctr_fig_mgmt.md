@@ -1,4 +1,7 @@
 
+Homework 5: Factor & Figure Management
+======================================
+
 Factor Management
 =================
 
@@ -501,6 +504,8 @@ I found this week's homework to take quite a bit of time - I was also rushed due
 **Some issues I encountered:**
 
 -   I spent too long trying to make sure I only selected a few of the countries with lowest expectancy, and realised instead of using `head()` to view them and then manually select them like I've been doing before, I can just pipe `head()` after the `levels()` argument to only retain the first 6 levels that I want to visualize.
+
+-   I could not for the life of me get anything to do with `arrange()` to make any noticeable different on the graphs. I'm not sure if this is supposed to be the case, but if it isn't, that's really frustrating. Would like to go over this in class maybe, as I know other people struggled as well.
 
 -   I had issues figuring out how to enter my pathway to save my csv files....using the `file=""` I realised it saves automatically to the folder that this markdown file is in (so my homework 5 folder), but what if I wanted to save it somewhere else? I kept getting error messages, so need to look into that later.
 
