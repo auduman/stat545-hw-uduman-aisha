@@ -20,6 +20,7 @@ suppressPackageStartupMessages(library(RColorBrewer))
 # Factor Management 
 
 The goals for this homework: 
+
 - Define factor variables 
 - Drop factor/levels 
 - Reorder levels based on knowledge from data 
@@ -34,23 +35,29 @@ I decided to stick with the Gapminder dataset as I find it much easier to use in
 
 **Drop Oceania** 
 
-I'm first filtering by continent, to exclude Oceania. 
+First let's see the summary for Gapminder: 
+
+```{r}
+summary(gapminder)
+nrow(gapminder)
+levels(gapminder$continent)
+```
+
+We can see that Gapminder originally has 5 continents and 1704 rows, 24 rows being associated with Oceania. 
+Now I'm filtering by continent, to exclude Oceania. 
 
 ```{r}
 gap_noocean <- gapminder %>% 
   filter(continent != "Oceania")
 ```
 
-Comparing this to the original Gapminder dataframe, which has 5 continents and 1704 rows, 24 rows being associated with Oceania. 
+
 Checking to see if Oceania has been dropped: We can see that now Oceania has 0 values, but *still shows up in the summary for this new dataframe.* 
 
 ```{r}
-summary(gapminder)
-nrow(gapminder)
-levels(gapminder$continent)
-
 summary(gap_noocean)
 ```
+
 
 We need to remove Oceania from this dataframe altogether. To do so, I used the `droplevels()` argument, to drop the unused levels: 
 
@@ -71,11 +78,13 @@ nrow(gap_noocean_drop)
 1704 - 1680 = 24. Yay! 
 
 
+
 Just to confirm that only 4 continents are present: 
 
 ```{r}
 levels(gap_noocean_drop$continent)
 ```
+
 
 Great, Oceania no longer exists in this new dataframe! 
 
@@ -154,14 +163,6 @@ min_lifeExp %>%
   group_by(country)
 ```
 
-
-To view only the first 15 rows of this very long dataset, I used the `head()` function: 
-
-```{r}
-head(min_lifeExp, 15)
-```
-
-
 Yes, the countries are arranged alphabetically. I want them to be displayed in terms of minimum life expectancy, so the dataframe must be re-arranged to display life expectancy levels in ascending order. *This is a note to myself, if I wanted to arrange by descending order I would use `arrange(desc(lifeExp))`, as `arrange()` automatically uses ascending order. 
 
 
@@ -191,6 +192,7 @@ ggplot(ascending_lifeExp, aes(year, lifeExp, colour=country)) +
 ```
 
 It doesn't seem like this has any effect on a graph. 
+
 
 
 
@@ -224,9 +226,11 @@ No, unless I'm doing it wrong...the visualizations are exactly the same! Even th
 
 
 
+
+
 # Visualization design 
 
-I think it will be interesting to take one of the first plots I ever made in ggplot, which is probably hideous, and try and work on it to make it look more visually pleasing after learning a lot about visualization techniques in this class. This is an initial plot of 
+I think it will be interesting to take one of the first (slightly complex) plots I ever made in ggplot, which is probably hideous, and try and work on it to make it look more visually pleasing after learning a lot about visualization techniques in this class. This is an initial plot of 
 
 ```{r}
 ggplot(gapminder, aes(year, lifeExp, colour = continent)) +
@@ -276,11 +280,13 @@ I can see that the .csv file shows up in the homework 5 folder.
 
 **Reading:** 
 
-Now to read the .csv file I just wrote, I will use the `read_csv` function: 
+Now to read the .csv file I just wrote, I will use the `read_csv` function. I also used the `head()` function again to only show the first 15 rows to save space. 
 
 ```{r}
 read_csv_asc <- read_csv("ascending_lifeExp.csv")
-kable(read_csv_asc, digits=2)
+
+head(read_csv_asc, 15) %>% 
+kable(digits=2)
 ```
 
 It works, I can write a .csv file and pull it up again. 
@@ -299,13 +305,34 @@ ggsave("MinLifeExpPlot.pdf", plot_minlifeExp, width = 8, height = 6)
 I played around a bit with figure height and width. After running, I noticed the .pdf immediately appearing in my homework 5 folder, found ![here](https://github.com/auduman/stat545-hw-uduman-aisha/blob/master/hw05/MinLifeExpPlot.pdf)
 
 
+I'll try saving a plot object made from homework 3: 
+
+```{r}
+p <- ggplot(gapminder %>% 
+  group_by(continent,year) %>% 
+  summarise(mean_lifeExp=mean(lifeExp)), 
+  aes(year, mean_lifeExp, group=continent, colour=continent)) + 
+  geom_smooth(method="loess", se=FALSE) + 
+  scale_colour_manual(values=c("darkslateblue", "olivedrab", "tan3", "orangered3", "maroon4")) +
+  labs(x = "Year", y = "Life Expectancy", title = "Life Expectancy Over Time for the Continents") + 
+  theme(axis.title = element_text(size=14),
+        axis.text.x = element_text(size=12),
+        axis.text.y = element_text(size=12),
+        plot.title = element_text(size=16, hjust = 0.5))
+```
+
+```{r}
+ggsave("my_plot.pdf", p)
+```
+
+I can see that this created another plot in my homework 5 folder, which can be found here. To be honest, I can't think of when this actually matters compared to the previous `ggsave` function I ran before. I have to read up about this more. 
 
 
 # Reporting my Progress 
 
 I found this week's homework to take quite a bit of time - I was also rushed due to my TA commitments and a trip I had to take on the weekend. The actual work took quite a long time so I wasn't able to spend as much time as I would have liked on the aesthetics of the output. 
 
-**Some issues I encountered:*
+**Some issues I encountered:**
 
 - I spent too long trying to make sure I only selected a few of the countries with lowest expectancy, and realised instead of using `head()` to view them and then manually select them like I've been doing before, I can just pipe `head()` after the `levels()` argument to only retain the first 6 levels that I want to visualize. 
 

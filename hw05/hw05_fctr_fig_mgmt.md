@@ -2,7 +2,11 @@
 Factor Management
 =================
 
-The goals for this homework: - Define factor variables - Drop factor/levels - Reorder levels based on knowledge from data
+The goals for this homework:
+
+-   Define factor variables
+-   Drop factor/levels
+-   Reorder levels based on knowledge from data
 
 ### Gapminder version:
 
@@ -10,14 +14,7 @@ I decided to stick with the Gapminder dataset as I find it much easier to use in
 
 **Drop Oceania**
 
-I'm first filtering by continent, to exclude Oceania.
-
-``` r
-gap_noocean <- gapminder %>% 
-  filter(continent != "Oceania")
-```
-
-Comparing this to the original Gapminder dataframe, which has 5 continents and 1704 rows, 24 rows being associated with Oceania. Checking to see if Oceania has been dropped: We can see that now Oceania has 0 values, but *still shows up in the summary for this new dataframe.*
+First let's see the summary for Gapminder:
 
 ``` r
 summary(gapminder)
@@ -51,6 +48,15 @@ levels(gapminder$continent)
 ```
 
     ## [1] "Africa"   "Americas" "Asia"     "Europe"   "Oceania"
+
+We can see that Gapminder originally has 5 continents and 1704 rows, 24 rows being associated with Oceania. Now I'm filtering by continent, to exclude Oceania.
+
+``` r
+gap_noocean <- gapminder %>% 
+  filter(continent != "Oceania")
+```
+
+Checking to see if Oceania has been dropped: We can see that now Oceania has 0 values, but *still shows up in the summary for this new dataframe.*
 
 ``` r
 summary(gap_noocean)
@@ -248,7 +254,7 @@ plot_minlifeExp <- ggplot(min_lifeExp, aes(year, lifeExp, colour=country)) +
 plot_minlifeExp
 ```
 
-![](hw05_fctr_fig_mgmt_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-10-1.png)
+![](hw05_fctr_fig_mgmt_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-11-1.png)
 
 Cool, now we can see the output of our reordered factors selecting for minimum life expectancy.
 
@@ -281,31 +287,6 @@ min_lifeExp %>%
     ##  9  1992 Afghanistan  41.674
     ## 10  1997 Afghanistan  41.763
     ## # ... with 62 more rows
-
-To view only the first 15 rows of this very long dataset, I used the `head()` function:
-
-``` r
-head(min_lifeExp, 15)
-```
-
-    ## # A tibble: 15 x 3
-    ##     year     country lifeExp
-    ##    <int>      <fctr>   <dbl>
-    ##  1  1952 Afghanistan  28.801
-    ##  2  1957 Afghanistan  30.332
-    ##  3  1962 Afghanistan  31.997
-    ##  4  1967 Afghanistan  34.020
-    ##  5  1972 Afghanistan  36.088
-    ##  6  1977 Afghanistan  38.438
-    ##  7  1982 Afghanistan  39.854
-    ##  8  1987 Afghanistan  40.822
-    ##  9  1992 Afghanistan  41.674
-    ## 10  1997 Afghanistan  41.763
-    ## 11  2002 Afghanistan  42.129
-    ## 12  2007 Afghanistan  43.828
-    ## 13  1952      Angola  30.015
-    ## 14  1957      Angola  31.999
-    ## 15  1962      Angola  34.000
 
 Yes, the countries are arranged alphabetically. I want them to be displayed in terms of minimum life expectancy, so the dataframe must be re-arranged to display life expectancy levels in ascending order. \*This is a note to myself, if I wanted to arrange by descending order I would use `arrange(desc(lifeExp))`, as `arrange()` automatically uses ascending order.
 
@@ -388,7 +369,7 @@ No, unless I'm doing it wrong...the visualizations are exactly the same! Even th
 Visualization design
 ====================
 
-I think it will be interesting to take one of the first plots I ever made in ggplot, which is probably hideous, and try and work on it to make it look more visually pleasing after learning a lot about visualization techniques in this class. This is an initial plot of
+I think it will be interesting to take one of the first (slightly complex) plots I ever made in ggplot, which is probably hideous, and try and work on it to make it look more visually pleasing after learning a lot about visualization techniques in this class. This is an initial plot of
 
 ``` r
 ggplot(gapminder, aes(year, lifeExp, colour = continent)) +
@@ -436,7 +417,7 @@ I can see that the .csv file shows up in the homework 5 folder.
 
 **Reading:**
 
-Now to read the .csv file I just wrote, I will use the `read_csv` function:
+Now to read the .csv file I just wrote, I will use the `read_csv` function. I also used the `head()` function again to only show the first 15 rows to save space.
 
 ``` r
 read_csv_asc <- read_csv("ascending_lifeExp.csv")
@@ -453,7 +434,8 @@ read_csv_asc <- read_csv("ascending_lifeExp.csv")
     ## )
 
 ``` r
-kable(read_csv_asc, digits=2)
+head(read_csv_asc, 15) %>% 
+kable(digits=2)
 ```
 
 |   X1|  year| country      |  lifeExp|
@@ -473,63 +455,6 @@ kable(read_csv_asc, digits=2)
 |   13|  1962| Gambia       |    33.90|
 |   14|  1962| Angola       |    34.00|
 |   15|  1967| Afghanistan  |    34.02|
-|   16|  1967| Sierra Leone |    34.11|
-|   17|  1972| Sierra Leone |    35.40|
-|   18|  1967| Gambia       |    35.86|
-|   19|  1967| Angola       |    35.98|
-|   20|  1997| Rwanda       |    36.09|
-|   21|  1972| Afghanistan  |    36.09|
-|   22|  1977| Sierra Leone |    36.79|
-|   23|  1972| Angola       |    37.93|
-|   24|  1972| Gambia       |    38.31|
-|   25|  1992| Sierra Leone |    38.33|
-|   26|  1977| Afghanistan  |    38.44|
-|   27|  1982| Sierra Leone |    38.45|
-|   28|  1952| Cambodia     |    39.42|
-|   29|  1977| Angola       |    39.48|
-|   30|  1982| Afghanistan  |    39.85|
-|   31|  1997| Sierra Leone |    39.90|
-|   32|  1987| Angola       |    39.91|
-|   33|  1982| Angola       |    39.94|
-|   34|  1952| Rwanda       |    40.00|
-|   35|  1987| Sierra Leone |    40.01|
-|   36|  1972| Cambodia     |    40.32|
-|   37|  1992| Angola       |    40.65|
-|   38|  1987| Afghanistan  |    40.82|
-|   39|  1997| Angola       |    40.96|
-|   40|  2002| Angola       |    41.00|
-|   41|  2002| Sierra Leone |    41.01|
-|   42|  1957| Cambodia     |    41.37|
-|   43|  1957| Rwanda       |    41.50|
-|   44|  1992| Afghanistan  |    41.67|
-|   45|  1997| Afghanistan  |    41.76|
-|   46|  1977| Gambia       |    41.84|
-|   47|  2002| Afghanistan  |    42.13|
-|   48|  2007| Sierra Leone |    42.57|
-|   49|  2007| Angola       |    42.73|
-|   50|  1962| Rwanda       |    43.00|
-|   51|  2002| Rwanda       |    43.41|
-|   52|  1962| Cambodia     |    43.41|
-|   53|  2007| Afghanistan  |    43.83|
-|   54|  1987| Rwanda       |    44.02|
-|   55|  1967| Rwanda       |    44.10|
-|   56|  1972| Rwanda       |    44.60|
-|   57|  1977| Rwanda       |    45.00|
-|   58|  1967| Cambodia     |    45.41|
-|   59|  1982| Gambia       |    45.58|
-|   60|  1982| Rwanda       |    46.22|
-|   61|  2007| Rwanda       |    46.24|
-|   62|  1987| Gambia       |    49.27|
-|   63|  1982| Cambodia     |    50.96|
-|   64|  1992| Gambia       |    52.64|
-|   65|  1987| Cambodia     |    53.91|
-|   66|  1992| Cambodia     |    55.80|
-|   67|  1997| Gambia       |    55.86|
-|   68|  1997| Cambodia     |    56.53|
-|   69|  2002| Cambodia     |    56.75|
-|   70|  2002| Gambia       |    58.04|
-|   71|  2007| Gambia       |    59.45|
-|   72|  2007| Cambodia     |    59.72|
 
 It works, I can write a .csv file and pull it up again.
 
@@ -544,12 +469,36 @@ ggsave("MinLifeExpPlot.pdf", plot_minlifeExp, width = 8, height = 6)
 
 I played around a bit with figure height and width. After running, I noticed the .pdf immediately appearing in my homework 5 folder, found ![here](https://github.com/auduman/stat545-hw-uduman-aisha/blob/master/hw05/MinLifeExpPlot.pdf)
 
+I'll try saving a plot object made from homework 3:
+
+``` r
+p <- ggplot(gapminder %>% 
+  group_by(continent,year) %>% 
+  summarise(mean_lifeExp=mean(lifeExp)), 
+  aes(year, mean_lifeExp, group=continent, colour=continent)) + 
+  geom_smooth(method="loess", se=FALSE) + 
+  scale_colour_manual(values=c("darkslateblue", "olivedrab", "tan3", "orangered3", "maroon4")) +
+  labs(x = "Year", y = "Life Expectancy", title = "Life Expectancy Over Time for the Continents") + 
+  theme(axis.title = element_text(size=14),
+        axis.text.x = element_text(size=12),
+        axis.text.y = element_text(size=12),
+        plot.title = element_text(size=16, hjust = 0.5))
+```
+
+``` r
+ggsave("my_plot.pdf", p)
+```
+
+    ## Saving 7 x 5 in image
+
+I can see that this created another plot in my homework 5 folder, which can be found here. To be honest, I can't think of when this actually matters compared to the previous `ggsave` function I ran before. I have to read up about this more.
+
 Reporting my Progress
 =====================
 
 I found this week's homework to take quite a bit of time - I was also rushed due to my TA commitments and a trip I had to take on the weekend. The actual work took quite a long time so I wasn't able to spend as much time as I would have liked on the aesthetics of the output.
 
-\*\*Some issues I encountered:\*
+**Some issues I encountered:**
 
 -   I spent too long trying to make sure I only selected a few of the countries with lowest expectancy, and realised instead of using `head()` to view them and then manually select them like I've been doing before, I can just pipe `head()` after the `levels()` argument to only retain the first 6 levels that I want to visualize.
 
